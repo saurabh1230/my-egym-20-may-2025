@@ -137,11 +137,12 @@ class TrainerProfile extends StatelessWidget {
               left: Dimensions.paddingSizeDefault,right: Dimensions.paddingSizeDefault,
               child: CustomButtonWidget(
                 onPressed: () {
+                  print('CHECK PRINT : ${detailsData}');
 
-                  Get.to(() => UpdateTrainer(
-                    isTrainerProfile: true,
-                    data: detailsData, name:    detailsData['full_name'] ?? "MyEGYM Trainer",
-                  ));
+                  // Get.to(() => UpdateTrainer(
+                  //   isTrainerProfile: true,
+                  //   data: detailsData, name: detailsData['full_name'] ?? "MyEGYM Trainer",
+                  // ));
                 }, buttonText: 'Update Profile',
 
               ),
