@@ -49,6 +49,7 @@ class CustomNetworkImageWidget extends StatelessWidget {
                   : isProfilePlaceHolder!
                       ? Images.icProfilePlaceHolder
                       : Images.placeholder,
+
        ),
         ),
       ),

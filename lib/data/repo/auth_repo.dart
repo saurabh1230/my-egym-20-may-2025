@@ -33,6 +33,8 @@ class AuthRepo {
     return true;
   }
 
+
+
   Future<Response> loginRepo(email, gymId, password) {
     return apiClient.getData(
         '${AppConstants.ownerLogin}?email=$email&gym_id=$gymId&password=$password');

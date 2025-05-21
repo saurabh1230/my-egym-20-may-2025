@@ -32,6 +32,15 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
+  Future<void> saveUserId(String userId) async {
+    await sharedPreferences.setString(AppConstants.userId, userId);
+  }
+
+  String? getUserid() {
+    return sharedPreferences.getString(AppConstants.userId);
+  }
+
+
   String getUserToken() {
     return authRepo.getUserToken();
   }
@@ -114,9 +123,10 @@ class AuthController extends GetxController implements GetxService {
       var token = responseData['data']?['token'];
       var user = responseData['data']?['user'];
       var userType = user?['type'];
-
+      var userID = responseData['data']?['user']['id'].toString();
       if (token != null && userType != null) {
         authRepo.saveUserToken(token);
+       saveUserId(userID!);
         saveLoginType(userType);
         switch (userType) {
           case 'owner':

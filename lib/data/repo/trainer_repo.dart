@@ -50,4 +50,10 @@ class TrainerRepo {
       },
     );
   }
+
+
+  Future<Response> getTrainerProfile() async {
+    return await apiClient.getData(AppConstants.trainerProfileUrl,
+        method: "GET");
+  }
 }

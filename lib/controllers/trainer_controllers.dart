@@ -462,6 +462,37 @@ class TrainerController extends GetxController {
     }
   }
 
+  Map<String, dynamic>? _trainerProfile;
+  Map<String, dynamic>? get trainerProfile => _trainerProfile;
+
+  Future<Map<String, dynamic>?> getTrainerProfile() async {
+    print('Fetching getTrainerProfile directly...');
+    LoadingDialog.showLoading();
+    _trainerDetails = null;
+    update();
+
+    try {
+      Response response = await trainerRepo.getTrainerProfile();
+
+      if (response.statusCode == 200) {
+        // Assign raw response data directly as a Map
+        _trainerProfile = Map<String, dynamic>.from(response.body['data']);
+        print(
+            " Data Sucess  getTrainerProfile!.length: ${_trainerProfile!.length}");
+        // _trainerDetails = response.body;
+      } else {
+        // Handle non-200 status codes
+        print("Failed to load data getTrainerProfile: ${response.statusCode}");
+      }
+    } catch (e) {
+      // Handle exceptions
+      print("Exception occurred getTrainerProfile: $e");
+    }
+
+    LoadingDialog.hideLoading();
+    update();
+    return _trainerProfile;
+  }
 
 }
 

@@ -22,12 +22,12 @@ class AppConstants {
   static const String addWorkout = 'workout/store';
   static const String trainerUpdateUrl = 'trainer/update';
   static const String membersUpdateUrl = 'members/update';
+  static const String trainerProfileUrl = 'trainer/profile';
   // Shared Key
-
   static const String theme = 'theme';
   static const String intro = 'intro';
   static const String token = 'token';
   static const String loginType = 'loginType';
-
+  static const String userId = 'userId';
   static const String fcmToken = '';
 }

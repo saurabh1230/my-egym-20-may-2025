@@ -15,55 +15,103 @@ import '../../../utils/styles.dart';
 import '../../widgets/specialization_dialog.dart';
 import '../../widgets/underline_textfield.dart';
 
-class UpdateTrainer extends StatelessWidget {
+class UpdateTrainer extends StatefulWidget {
+  final bool? isTrainerProfile;
   final String name;
-  final   Map<String, dynamic>? data;
-   UpdateTrainer({super.key, required this.data, required this.name});
+  final  Map<String, dynamic>? data;
+
+   const UpdateTrainer({super.key, required this.data, required this.name, this.isTrainerProfile = false});
+
+  @override
+  State<UpdateTrainer> createState() => _UpdateTrainerState();
+}
+
+class _UpdateTrainerState extends State<UpdateTrainer> {
    TextEditingController trainerNameController = TextEditingController();
+
   final TextEditingController dobController = TextEditingController();
+
   final TextEditingController phoneController = TextEditingController();
+
   final TextEditingController emailController = TextEditingController();
+
   final RxString gender = 'male'.obs;
+
   final TextEditingController salaryController =
   TextEditingController(text: '₹ 20000');
+
   final TextEditingController joiningDateController =
   TextEditingController(text: '10-01-2025');
+
   final TextEditingController addressController = TextEditingController();
+
   final TextEditingController instaController = TextEditingController();
+
   final TextEditingController facebookController = TextEditingController();
+
   final TextEditingController yearsOfExperience = TextEditingController();
+
   final TextEditingController createPasswordController =
   TextEditingController(text: '123456xyz');
+
   final TextEditingController confirmPasswordController =
   TextEditingController(text: '123456xyz');
+
   final RxString selectedQualification = ''.obs;
+
   final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     Get.put(DataRepo(apiClient: Get.find()));
     Get.put(DataController(dataRepo: Get.find()));
     Get.put(HelperController());
-    final trainer = data?['data']?['trainer'] ?? {};
-    trainerNameController.text = trainer['full_name']?.toString() ?? '';
-    dobController.text = DateConverter.formatDateDMYString(
-      inputDate: trainer['date_of_birth']?.toString() ?? '',
-      inputFormat: 'yyyy-MM-dd',
-      outputFormat: 'dd/MM/yyyy', // ← use slashes here
-    );
-    phoneController.text = trainer['phone_number']?.toString() ?? '';
-    emailController.text = trainer['email']?.toString() ?? '';
-    addressController.text = trainer['address']?.toString() ?? '';
-    yearsOfExperience.text = trainer['experienceinyear']?.toString() ?? '';
-    joiningDateController.text = trainer['created_at']?.toString() ?? '';
-    instaController.text = trainer['instaProfileLink']?.toString() ?? '';
-    facebookController.text = trainer['facebookProfileLink']?.toString() ?? '';
+    // final trainer = widget.data?['data']?['trainer'] ?? {};
+    final trainer = widget.data?['data']?['trainer'] ?? {};
+    print("Trainer Map Data : ${trainer}");
+    if(widget.isTrainerProfile == true) {
+
+      trainerNameController.text = trainer['full_name']?.toString() ?? '';
+      dobController.text = DateConverter.formatDateDMYString(
+        inputDate: trainer['date_of_birth']?.toString() ?? '',
+        inputFormat: 'yyyy-MM-dd',
+        outputFormat: 'dd/MM/yyyy', // ← use slashes here
+      );
+      phoneController.text = trainer['phone_number']?.toString() ?? '';
+      emailController.text = trainer['email']?.toString() ?? '';
+      addressController.text = trainer['address']?.toString() ?? '';
+      yearsOfExperience.text = trainer['experienceinyear']?.toString() ?? '';
+      joiningDateController.text = trainer['created_at']?.toString() ?? '';
+      instaController.text = trainer['instaProfileLink']?.toString() ?? '';
+      facebookController.text = trainer['facebookProfileLink']?.toString() ?? '';
+
+    } else {
+
+      trainerNameController.text = trainer['full_name']?.toString() ?? '';
+      dobController.text = DateConverter.formatDateDMYString(
+        inputDate: trainer['date_of_birth']?.toString() ?? '',
+        inputFormat: 'yyyy-MM-dd',
+        outputFormat: 'dd/MM/yyyy', // ← use slashes here
+      );
+      phoneController.text = trainer['phone_number']?.toString() ?? '';
+      emailController.text = trainer['email']?.toString() ?? '';
+      addressController.text = trainer['address']?.toString() ?? '';
+      yearsOfExperience.text = trainer['experienceinyear']?.toString() ?? '';
+      joiningDateController.text = trainer['created_at']?.toString() ?? '';
+      instaController.text = trainer['instaProfileLink']?.toString() ?? '';
+      facebookController.text = trainer['facebookProfileLink']?.toString() ?? '';
+
+    }
+
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.find<DataController>().getQualificationList();
       Get.find<DataController>().getSpecializationList();
     });
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: name,isBackButtonExist: true,isHideNotification: true,),
+      appBar: CustomAppBar(title: widget.name,isBackButtonExist: true,isHideNotification: true,),
       body: GetBuilder<HelperController>(builder: (helperControl) {
         return   GetBuilder<DataController>(builder: (dataControl) {
           return GetBuilder<TrainerController>(builder: (trainerControl) {
@@ -295,7 +343,9 @@ class UpdateTrainer extends StatelessWidget {
                     .selectedQualificationId
                     .toString(),
                 experienceInYear: yearsOfExperience.text,
-                password: confirmPasswordController.text, trainerId: trainer['user_id'].toString());
+                password: confirmPasswordController.text,
+                trainerId: trainer['user_id'].toString()
+            );
 
 
             }
@@ -314,9 +364,6 @@ class UpdateTrainer extends StatelessWidget {
           });
         });
       }),
-
-
-
 
     );
   }

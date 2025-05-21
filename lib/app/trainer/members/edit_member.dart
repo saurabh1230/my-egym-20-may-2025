@@ -681,7 +681,7 @@ class EditMemberScreen extends StatelessWidget {
                                       Theme.of(context).primaryColor,
                                     ),
                                     child: Text(
-                                      'Add Member',
+                                      'Edit Member',
                                       style: notoSansRegular.copyWith(
                                           color: Colors.white),
                                     ),
