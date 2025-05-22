@@ -62,4 +62,15 @@ class DateConverter {
       return inputDate; // fallback
     }
   }
+
+  static String formatDateToYMD(String inputDate) {
+    try {
+      final dateTime = DateFormat('dd-MM-yyyy').parse(inputDate);
+      return DateFormat('yyyy-MM-dd').format(dateTime);
+    } catch (e) {
+      print('Date formatting error: $e');
+      return inputDate; // fallback
+    }
+  }
+
 }

@@ -27,6 +27,8 @@ class UpdateTrainer extends StatefulWidget {
 }
 
 class _UpdateTrainerState extends State<UpdateTrainer> {
+
+  late final Map<String, dynamic> trainerData;
    TextEditingController trainerNameController = TextEditingController();
 
   final TextEditingController dobController = TextEditingController();
@@ -62,53 +64,91 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
   final formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
-    Get.put(DataRepo(apiClient: Get.find()));
-    Get.put(DataController(dataRepo: Get.find()));
-    Get.put(HelperController());
-    // final trainer = widget.data?['data']?['trainer'] ?? {};
-    final trainer = widget.data?['data']?['trainer'] ?? {};
-    print("Trainer Map Data : ${trainer}");
-    if(widget.isTrainerProfile == true) {
+  void initState() {
+    super.initState();
 
-      trainerNameController.text = trainer['full_name']?.toString() ?? '';
-      dobController.text = DateConverter.formatDateDMYString(
-        inputDate: trainer['date_of_birth']?.toString() ?? '',
-        inputFormat: 'yyyy-MM-dd',
-        outputFormat: 'dd/MM/yyyy', // ← use slashes here
-      );
-      phoneController.text = trainer['phone_number']?.toString() ?? '';
-      emailController.text = trainer['email']?.toString() ?? '';
-      addressController.text = trainer['address']?.toString() ?? '';
-      yearsOfExperience.text = trainer['experienceinyear']?.toString() ?? '';
-      joiningDateController.text = trainer['created_at']?.toString() ?? '';
-      instaController.text = trainer['instaProfileLink']?.toString() ?? '';
-      facebookController.text = trainer['facebookProfileLink']?.toString() ?? '';
+    trainerData = widget.isTrainerProfile == true
+        ? widget.data ?? {}
+        : widget.data?['data']?['trainer'] ?? {};
 
-    } else {
-
-      trainerNameController.text = trainer['full_name']?.toString() ?? '';
-      dobController.text = DateConverter.formatDateDMYString(
-        inputDate: trainer['date_of_birth']?.toString() ?? '',
-        inputFormat: 'yyyy-MM-dd',
-        outputFormat: 'dd/MM/yyyy', // ← use slashes here
-      );
-      phoneController.text = trainer['phone_number']?.toString() ?? '';
-      emailController.text = trainer['email']?.toString() ?? '';
-      addressController.text = trainer['address']?.toString() ?? '';
-      yearsOfExperience.text = trainer['experienceinyear']?.toString() ?? '';
-      joiningDateController.text = trainer['created_at']?.toString() ?? '';
-      instaController.text = trainer['instaProfileLink']?.toString() ?? '';
-      facebookController.text = trainer['facebookProfileLink']?.toString() ?? '';
-
-    }
-
-
+    trainerNameController.text = trainerData['full_name']?.toString() ?? '';
+    dobController.text = DateConverter.formatDateDMYString(
+      inputDate: trainerData['date_of_birth']?.toString() ?? '',
+      inputFormat: 'yyyy-MM-dd',
+      outputFormat: 'dd/MM/yyyy',
+    );
+    phoneController.text = trainerData['phone_number']?.toString() ?? '';
+    emailController.text = trainerData['email']?.toString() ?? '';
+    addressController.text = trainerData['address']?.toString() ?? '';
+    yearsOfExperience.text = trainerData['experienceinyear']?.toString() ?? '';
+    joiningDateController.text = trainerData['created_at']?.toString() ?? '';
+    instaController.text = trainerData['instaProfileLink']?.toString() ?? '';
+    facebookController.text = trainerData['facebookProfileLink']?.toString() ?? '';
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.find<DataController>().getQualificationList();
       Get.find<DataController>().getSpecializationList();
     });
+  }
+
+
+  // @override
+  // void initState() {
+  //   if(widget.isTrainerProfile == true) {
+  //     final trainer = widget.data ?? {};
+  //     trainerNameController.text = trainer['full_name']?.toString() ?? '';
+  //     dobController.text = DateConverter.formatDateDMYString(
+  //       inputDate: trainer['date_of_birth']?.toString() ?? '',
+  //       inputFormat: 'yyyy-MM-dd',
+  //       outputFormat: 'dd/MM/yyyy', // ← use slashes here
+  //     );
+  //     phoneController.text = trainer['phone_number']?.toString() ?? '';
+  //     emailController.text = trainer['email']?.toString() ?? '';
+  //     addressController.text = trainer['address']?.toString() ?? '';
+  //     yearsOfExperience.text = trainer['experienceinyear']?.toString() ?? '';
+  //     joiningDateController.text = trainer['created_at']?.toString() ?? '';
+  //     instaController.text = trainer['instaProfileLink']?.toString() ?? '';
+  //     facebookController.text = trainer['facebookProfileLink']?.toString() ?? '';
+  //
+  //   } else {
+  //     final trainer = widget.data?['data']?['trainer'] ?? {};
+  //     trainerNameController.text = trainer['full_name']?.toString() ?? '';
+  //     dobController.text = DateConverter.formatDateDMYString(
+  //       inputDate: trainer['date_of_birth']?.toString() ?? '',
+  //       inputFormat: 'yyyy-MM-dd',
+  //       outputFormat: 'dd/MM/yyyy', // ← use slashes here
+  //     );
+  //     phoneController.text = trainer['phone_number']?.toString() ?? '';
+  //     emailController.text = trainer['email']?.toString() ?? '';
+  //     addressController.text = trainer['address']?.toString() ?? '';
+  //     yearsOfExperience.text = trainer['experienceinyear']?.toString() ?? '';
+  //     joiningDateController.text = trainer['created_at']?.toString() ?? '';
+  //     instaController.text = trainer['instaProfileLink']?.toString() ?? '';
+  //     facebookController.text = trainer['facebookProfileLink']?.toString() ?? '';
+  //
+  //   }
+  //
+  //
+  //
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     Get.find<DataController>().getQualificationList();
+  //     Get.find<DataController>().getSpecializationList();
+  //   });
+  //   super.initState();
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    Get.put(DataRepo(apiClient: Get.find()));
+    Get.put(DataController(dataRepo: Get.find()));
+    Get.put(HelperController());
+
+
+
+
+
+
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: widget.name,isBackButtonExist: true,isHideNotification: true,),
@@ -327,8 +367,10 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
                           ),
                           SizedBox(height: 24.0),
                           CustomButtonWidget(buttonText: "Update",onPressed: () {
-            if(formKey.currentState!.validate()){  trainerControl.updateTrainer(
+            if(formKey.currentState!.validate()){
+              print('PRINT DATA : ${trainerData['user_id'].toString()}');
 
+              trainerControl.updateTrainer(
                 fullName: trainerNameController.text,
                 dateOfBirth: dobController.text,
                 gender: gender.toString(),
@@ -344,7 +386,7 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
                     .toString(),
                 experienceInYear: yearsOfExperience.text,
                 password: confirmPasswordController.text,
-                trainerId: trainer['user_id'].toString()
+                trainerId: trainerData['user_id'].toString()
             );
 
 

@@ -96,9 +96,9 @@ class CustomNetworkRoundImageWidget extends StatelessWidget {
         placeholder: (context, url) =>
             Center(child: CircularProgressIndicator()),
         errorWidget: (context, url, error) => Padding(
-          padding: EdgeInsets.all(imagePadding ?? 0),
+          padding: EdgeInsets.all(imagePadding ?? 6),
           child: SvgPicture.asset(
-            Images.icProfilePlaceHolder,
+            Images.svgProfilePlaceholder,
             fit: fit!,
             color: Colors.black,
           ),

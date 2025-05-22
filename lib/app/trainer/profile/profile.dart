@@ -67,7 +67,7 @@ class TrainerProfile extends StatelessWidget {
                       CustomDecoratedContainer(
                           child: Row(
                             children: [
-                              CustomNetworkImageWidget(
+                              CustomNetworkRoundImageWidget(
                                   height: 80,
                                   width: 80,
                                   image: detailsData['photo'] ?? ""),
@@ -139,10 +139,10 @@ class TrainerProfile extends StatelessWidget {
                 onPressed: () {
                   print('CHECK PRINT : ${detailsData}');
 
-                  // Get.to(() => UpdateTrainer(
-                  //   isTrainerProfile: true,
-                  //   data: detailsData, name: detailsData['full_name'] ?? "MyEGYM Trainer",
-                  // ));
+                  Get.to(() => UpdateTrainer(
+                    isTrainerProfile: true,
+                    data: detailsData, name: detailsData['full_name'] ?? "MyEGYM Trainer",
+                  ));
                 }, buttonText: 'Update Profile',
 
               ),

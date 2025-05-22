@@ -15,6 +15,7 @@ import 'package:myegym/controllers/trainer_controllers.dart';
 
 import 'package:myegym/data/repo/member_repo.dart';
 import 'package:myegym/data/repo/trainer_repo.dart';
+import 'package:myegym/utils/date_converter.dart';
 import 'package:myegym/utils/dimensions.dart';
 import 'package:myegym/utils/sizeboxes.dart';
 
@@ -123,6 +124,12 @@ class AddWorkoutScreen extends StatelessWidget {
 
                                       print(ownerControl.selectedActivityId);
                                     },
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please select an activity';
+                                      }
+                                      return null;
+                                    },
                                   ))
                             ],
                           ),
@@ -166,6 +173,12 @@ class AddWorkoutScreen extends StatelessWidget {
 
                                       print(ownerControl.selectedSubActivityId);
                                     },
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please select an sub activity';
+                                      }
+                                      return null;
+                                    },
                                   ))
                             ],
                           ),
@@ -178,8 +191,8 @@ class AddWorkoutScreen extends StatelessWidget {
                                   onTap: () async {
                                     await helperControl
                                         .selectStartDateDateFunction(context);
-                                    startingDateController.text =
-                                        helperControl.selectedStartDate;
+                                    startingDateController.text = DateConverter.formatDateToYMD(helperControl.selectedStartDate.replaceAll("/", "-"));
+                                    // startingDateController.text = helperControl.selectedStartDate.replaceAll("/", "-");
                                   },
                                   label: 'Starting Date',
                                   hint: 'Starting Date',
@@ -195,8 +208,9 @@ class AddWorkoutScreen extends StatelessWidget {
                                   onTap: () async {
                                     await helperControl
                                         .selectEndDDateFunction(context);
-                                    endingDateController.text =
-                                        helperControl.selectedEndDate;
+                                    endingDateController.text = DateConverter.formatDateToYMD(helperControl.selectedEndDate.replaceAll("/", "-"));
+
+
                                   },
                                   label: 'Ending Date',
                                   hint: 'Ending Date',
@@ -369,15 +383,15 @@ class AddWorkoutScreen extends StatelessWidget {
                           sizedBoxDefault(),
                           ElevatedButton(
                             onPressed: () {
-                              Get.dialog(DailyScheduleDialog(
-                                onSave: (scheduleList) {
-                                  // Send this list to your API:
-                                  print('Final Schedule: $scheduleList');
+                          Get.to(() => DailyScheduleDialog(
+                            onSave: (scheduleList) {
+                              // Send this list to your API:
+                              print('Final Schedule: $scheduleList');
 
-                                  scheduleData = scheduleList;
+                              scheduleData = scheduleList;
 
-                                },
-                              ));
+                            },
+                          ));
 
                               // Get.back();
                             },
@@ -519,7 +533,7 @@ class AddWorkoutScreen extends StatelessWidget {
                               ElevatedButton(
                                 onPressed: () {
                                   if (formKey.currentState!.validate()) {
-                                    if ((helperControl.pickedImage == null || helperControl.pickedImage!.path.isEmpty) &&
+                                    if (
                                         (helperControl.pickedDocument == null || helperControl.pickedDocument!.path.isEmpty)) {
                                       showCustomSnackBar(context, "Workout Image");
                                     } else {
@@ -529,8 +543,9 @@ class AddWorkoutScreen extends StatelessWidget {
                                           endDate: endingDateController.text,
                                           notes: noteController.text,
                                           goals: goalController.text,
-                                          level: level.value,
-
+                                          level: level.value == "Beginner" ?
+                                          "1" : level.value == "intermediate" ? "2" :
+                                          "3",
                                           time: times.value,
                                           activitie: ownerControl.selectedActivityId.toString(),
                                           subactivity: ownerControl.selectedSubActivityId.toString(),
@@ -539,7 +554,8 @@ class AddWorkoutScreen extends StatelessWidget {
                                           times: times.toString(),
                                           session: sessions.toString(),
                                           frequency: frequency.toString(),
-                                          days: scheduleData);
+                                          days: scheduleData, photoFilePath:  helperControl
+                                          .pickedDocument!.path);
                                     }
                                   } else {
                                     showCustomSnackBar(context, "Please Add Required Fields");

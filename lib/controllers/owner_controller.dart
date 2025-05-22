@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -74,6 +75,8 @@ class OwnerController extends GetxController {
     LoadingDialog.hideLoading();
     update();
   }
+
+
   Future<void> createWorkoutApi({
     required String startDate,
     required String endDate,
@@ -89,89 +92,74 @@ class OwnerController extends GetxController {
     required String session,
     required String frequency,
     required List<Map<String, dynamic>> days,
+    required String photoFilePath,
   }) async {
+    var url = Uri.parse('https://lab7.invoidea.in/egym/api/workout/store');
+
     var headers = {
       'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken()}',
     };
 
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse('https://lab7.invoidea.in/egym/api/workout/store'),
-    );
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll(headers);
 
-    // Add static fields
-    request.fields.addAll({
-      'start_date': startDate,
-      'end_date': endDate,
-      'notes': notes,
-      'goals': goals,
-      'level': level,
-      'injury': "2",
-      'time': time,
-      'activitie': activitie,
-      'subactivity': subactivity,
-      'activities_id': activitiesId,
-      'subactivity_id': subactivityId,
-      'times': times,
-      'session': session,
-      'frequency': frequency,
-    });
+    // 🧠 Add form fields
+    request.fields['activity_id'] = activitiesId;
+    request.fields['start_date'] = startDate;
+    request.fields['end_date'] = endDate;
+    request.fields['notes'] = notes;
+    request.fields['goals'] = goals;
+    request.fields['level'] = level;
+    request.fields['injury'] = "2";
+    request.fields['time'] = time;
+    request.fields['activitie'] = activitie;
+    request.fields['subactivity'] = subactivity;
+    request.fields['activities_id'] = activitiesId;
+    request.fields['subactivity_id'] = subactivityId;
+    request.fields['times'] = times;
+    request.fields['session'] = session;
+    request.fields['frequency'] = frequency;
 
-    // Add dynamic days and subactivities
+    // 🔁 Add complex 'days' structure manually
     for (int i = 0; i < days.length; i++) {
-      final day = days[i];
+      var day = days[i];
+      request.fields['days[$i][day]'] = day['day'];
+      request.fields['days[$i][activity]'] = day['activity'].toString();
 
-      if (day.containsKey('day')) {
-        request.fields['days[$i][day]'] = day['day'];
-      }
-      if (day.containsKey('activity')) {
-        request.fields['days[$i][activity]'] = day['activity'];
-      }
-
-      if (day.containsKey('subactivities')) {
-        List subactivities = day['subactivities'];
-        for (int j = 0; j < subactivities.length; j++) {
-          final sub = subactivities[j];
-          if (sub['id'] != null) {
-            request.fields['days[$i][subactivities][$j][id]'] = sub['id'];
-          }
-          if (sub['sets'] != null) {
-            request.fields['days[$i][subactivities][$j][sets]'] = sub['sets'];
-          }
-          if (sub['reps'] != null) {
-            request.fields['days[$i][subactivities][$j][reps]'] = sub['reps'];
-          }
-          if (sub['weight'] != null) {
-            request.fields['days[$i][subactivities][$j][weight]'] = sub['weight'];
-          }
-          if (sub['rest'] != null) {
-            request.fields['days[$i][subactivities][$j][rest]'] = sub['rest'];
-          }
-        }
+      List subactivities = day['subactivities'];
+      for (int j = 0; j < subactivities.length; j++) {
+        var sub = subactivities[j];
+        request.fields['days[$i][subactivities][$j][id]'] = sub['id'].toString();
+        request.fields['days[$i][subactivities][$j][sets]'] = sub['sets'].toString();
+        request.fields['days[$i][subactivities][$j][reps]'] = sub['reps'].toString();
+        request.fields['days[$i][subactivities][$j][weight]'] = sub['weight'].toString();
+        request.fields['days[$i][subactivities][$j][rest]'] = sub['rest'].toString();
       }
     }
 
-    request.headers.addAll(headers);
-
-    // Print request payload for debugging
-    print("📤 Sending the following data to the API:");
-    request.fields.forEach((key, value) {
-      print('$key: $value');
-    });
+    // 📷 Attach photo if present
+    if (photoFilePath.isNotEmpty) {
+      try {
+        File imageFile = File(photoFilePath);
+        request.files.add(await http.MultipartFile.fromPath('photo', imageFile.path));
+      } catch (e) {
+        print('❗ Error reading image file: $e');
+      }
+    }
 
     try {
-      http.StreamedResponse response = await request.send();
-
-      String responseBody = await response.stream.bytesToString();
+      var response = await request.send();
 
       if (response.statusCode == 200) {
-        print("✅ Success: $responseBody");
+        final responseData = await response.stream.bytesToString();
+        print('✅ Success: $responseData');
       } else {
-        print("❌ Error ${response.statusCode}: ${response.reasonPhrase}");
-        print("🧾 Response Body: $responseBody");
+        final errorData = await response.stream.bytesToString();
+        print('❌ Failed with status: ${response.statusCode}');
+        print('Response: $errorData');
       }
     } catch (e) {
-      print("❗ Exception occurred: $e");
+      print('❗ Error sending request: $e');
     }
   }
 

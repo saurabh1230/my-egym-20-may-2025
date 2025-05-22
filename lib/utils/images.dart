@@ -12,6 +12,7 @@ class Images {
   static const String svgChest = 'assets/icons/ic_chest.svg';
   static const String svgBicep = 'assets/icons/svg_bicep.svg';
   static const String placeholder = 'assets/images/img_placeholder.png';
+  static const String svgProfilePlaceholder = 'assets/icons/svgProfileIcon.svg';
   static const String icProfilePlaceHolder =
       'assets/icons/ic_profile_holder.svg';
 }
