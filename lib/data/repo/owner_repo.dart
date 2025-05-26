@@ -25,4 +25,18 @@ class OwnerRepo {
   Future<Response> getWorkoutSubActivityRepo() async {
     return await apiClient.getData(AppConstants.subworkOutActivity, method: "GET");
   }
+
+  Future<Response> getWorkoutGoalRepo() async {
+    return await apiClient.getData(AppConstants.workoutGoalUrl, method: "GET");
+  }
+
+  Future<Response> addWorkoutGoal(name, status,) {
+    return apiClient.getData(
+        '${AppConstants.addWorkoutGoal}?name=$name&status=$status',
+     );
+  }
+
+  Future<Response> getFoodListingRepo() async {
+    return await apiClient.getData(AppConstants.foodListingUrl, method: "GET");
+  }
 }

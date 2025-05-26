@@ -29,3 +29,4 @@ const Color greyColor = Color(0xff83A2AF);
 const Color skyColor = Color(0xff46C8D0);
 const Color darkBlueColor = Color(0xff517DA5);
 const Color darkPinkColor = Color(0xffBC6868);
+const Color primaryRedColor= Color(0xffDB292C);

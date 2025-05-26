@@ -1,13 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-
+import 'package:http_parser/http_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:myegym/app/widgets/custom_snackbar.dart';
 import 'package:myegym/app/widgets/loading_dialog.dart';
 import 'package:myegym/controllers/auth_controller.dart';
+import 'package:myegym/controllers/plans_controller.dart';
 import 'package:myegym/data/models/trainer_details_model.dart';
 import 'package:myegym/data/models/trainer_model.dart';
 import 'package:myegym/data/repo/owner_repo.dart';
@@ -77,6 +79,7 @@ class OwnerController extends GetxController {
   }
 
 
+
   Future<void> createWorkoutApi({
     required String startDate,
     required String endDate,
@@ -103,7 +106,7 @@ class OwnerController extends GetxController {
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll(headers);
 
-    // 🧠 Add form fields
+    // ➕ Add form fields
     request.fields['activity_id'] = activitiesId;
     request.fields['start_date'] = startDate;
     request.fields['end_date'] = endDate;
@@ -120,7 +123,7 @@ class OwnerController extends GetxController {
     request.fields['session'] = session;
     request.fields['frequency'] = frequency;
 
-    // 🔁 Add complex 'days' structure manually
+    // 🔁 Add 'days' list with nested subactivities
     for (int i = 0; i < days.length; i++) {
       var day = days[i];
       request.fields['days[$i][day]'] = day['day'];
@@ -137,7 +140,7 @@ class OwnerController extends GetxController {
       }
     }
 
-    // 📷 Attach photo if present
+    // 📷 Attach photo if provided
     if (photoFilePath.isNotEmpty) {
       try {
         File imageFile = File(photoFilePath);
@@ -147,11 +150,38 @@ class OwnerController extends GetxController {
       }
     }
 
+    // 🧾 Print entire payload as raw JSON (for debugging)
+    Map<String, dynamic> requestJson = {
+      "activity_id": activitiesId,
+      "start_date": startDate,
+      "end_date": endDate,
+      "notes": notes,
+      "goals": goals,
+      "level": level,
+      "injury": "2",
+      "time": time,
+      "activitie": activitie,
+      "subactivity": subactivity,
+      "activities_id": activitiesId,
+      "subactivity_id": subactivityId,
+      "times": times,
+      "session": session,
+      "frequency": frequency,
+      "days": days,
+      "photo": photoFilePath.isNotEmpty ? photoFilePath : null,
+    };
+
+    print("📦 Raw JSON being sent:");
+    print(jsonEncode(requestJson));
+
     try {
       var response = await request.send();
 
       if (response.statusCode == 200) {
         final responseData = await response.stream.bytesToString();
+        showCustomSnackBar(Get.context!, "Workout Added Successfully");
+        Get.find<PlansController>().getWorkoutListing();
+        Get.back();
         print('✅ Success: $responseData');
       } else {
         final errorData = await response.stream.bytesToString();
@@ -162,6 +192,7 @@ class OwnerController extends GetxController {
       print('❗ Error sending request: $e');
     }
   }
+
 
   Rx<dynamic> selectedActivity = Rx<dynamic>({});
   // final Rx<TrainerModel?> selectedTrainer = Rx<TrainerModel?>(null);
@@ -289,6 +320,271 @@ class OwnerController extends GetxController {
       update();
     }
   }
+
+
+  Rx<dynamic> selectedGoal = Rx<dynamic>({});
+  // final Rx<TrainerModel?> selectedTrainer = Rx<TrainerModel?>(null);
+  int _selectedGoalID = 0;
+
+
+  int get selectedGoalID => _selectedGoalID;
+
+  void selectGoalId(int val) {
+    _selectedGoalID = val;
+    update();
+  }
+
+  List<dynamic>? _workoutGoalList;
+  List<dynamic>? get workoutGoalList => _workoutGoalList;
+
+  Future<void> getWorkoutGoalApi() async {
+    try {
+      LoadingDialog.showLoading();
+      update();
+
+      print("🔥 Calling getWorkoutGoalApi API...");
+      Response response = await ownerRepo.getWorkoutGoalRepo();
+
+      print("📥 Full response getWorkoutGoalApi: ${response.bodyString}");
+      print("📡 Status code getWorkoutGoalApi: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        var responseData = response.body;
+
+        // Directly access 'data' as a List<dynamic>
+        List<dynamic> data = responseData["goals"];
+
+        if (data.isNotEmpty) {
+          var firstItem = data[0];
+
+          print("🎯 First getWorkoutGoalApi info: $firstItem");
+
+          selectedGoal.value = firstItem;
+          _selectedGoalID = firstItem["id"];
+        }
+
+        print("🎯 getSubActivityList List Length: ${data.length}");
+        _workoutGoalList = data; // Store the entire trainer list
+      } else {
+        print("❌ Non-200 response getWorkoutGoalApi");
+        var responseData = response.body;
+        showCustomSnackBar(
+          Get.context!,
+          responseData["message"] ?? 'Error fetching getWorkoutGoalApi',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      print("🚨 Exception: $e");
+      showCustomSnackBar(Get.context!, 'Something went wrong getSubActivityList: $e',
+          isError: true);
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
+
+
+  Future<void> addWorkoutGoal({String? name,}) async {
+    print('Fetching addWorkoutGoal ================>');
+    LoadingDialog.showLoading();
+
+    try {
+      Response response = await ownerRepo.addWorkoutGoal(name, "1");
+
+      if (response.statusCode == 200) {
+
+        showCustomSnackBar(Get.context!, "Goal Added Successfully");
+        Get.back();
+      } else {
+        showCustomSnackBar(Get.context!, "Goal Added Successfully");
+        Get.back();
+        print("Failed to addWorkoutGoal: ${response.statusCode}");
+      }
+    } catch (e) {
+      showCustomSnackBar(Get.context!, "Goal Added Successfully");
+      Get.back();
+      print("Exception occurred addWorkoutGoal: $e");
+    }
+    LoadingDialog.hideLoading();
+    update();
+  }
+
+  List<dynamic>? _foodList;
+  List<dynamic>? get foodList => _foodList;
+
+
+  Rx<dynamic> selectedFood = Rx<dynamic>({});
+  // final Rx<TrainerModel?> selectedTrainer = Rx<TrainerModel?>(null);
+  int _selectedFoodID = 0;
+
+
+  int get selectedFoodID => _selectedFoodID;
+
+  void selectFoodId(int val) {
+    _selectedFoodID = val;
+    update();
+  }
+
+
+  Future<void> getFoodListingApi() async {
+    try {
+      // LoadingDialog.showLoading();
+      // update();
+
+      print("🔥 Calling getFoodListingApi API...");
+      Response response = await ownerRepo.getFoodListingRepo();
+
+      print("📥 Full response getFoodListingApi: ${response.bodyString}");
+      print("📡 Status code getFoodListingApi: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        var responseData = response.body;
+
+        // Directly access 'data' as a List<dynamic>
+        List<dynamic> data = responseData["foodItem"];
+
+        if (data.isNotEmpty) {
+          var firstItem = data[0];
+
+          print("🎯 First getFoodListingApi info: $firstItem");
+
+          selectedFood.value = firstItem;
+          _selectedFoodID = firstItem["id"];
+        }
+
+        print("🎯 getFoodListingApi List Length: ${data.length}");
+        _foodList = data; // Store the entire trainer list
+      } else {
+        print("❌ Non-200 response getFoodListingApi");
+        var responseData = response.body;
+        showCustomSnackBar(
+          Get.context!,
+          responseData["message"] ?? 'Error fetching getWorkoutGoalApi',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      print("🚨 Exception: $e");
+      showCustomSnackBar(Get.context!, 'Something went wrong getSubActivityList: $e',
+          isError: true);
+    } finally {
+      // LoadingDialog.hideLoading();
+      // update();
+    }
+  }
+
+
+
+  Future<dynamic> addMemberApi({
+    required String preference,
+    required String lifestyle,
+    required String supplementName,
+    required String dose,
+    required String time,
+    required String remark,
+    required String note,
+    required String portionControl,
+    required String healthyTips,
+    required String exercise,
+    required String unit,
+    required String goal,
+    required XFile? photo,
+  }) async {
+    final SharedPreferences sharedPreferences =
+    await SharedPreferences.getInstance();
+    String? token = sharedPreferences.getString(AppConstants.token);
+    LoadingDialog.showLoading();
+    update();
+
+    if (token == null || token.isEmpty) {
+      print('Token is null or empty');
+      LoadingDialog.hideLoading();
+      update();
+      return false;
+    }
+
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    };
+
+    var request = http.MultipartRequest(
+      'POST', // Ensure PATCH method is what your API requires
+      Uri.parse('${AppConstants.baseUrl}members/store'),
+    );
+
+    request.fields.addAll({
+      "preference": preference,
+      "lifestyle": lifestyle,
+      "supplement_name": supplementName,
+      "dose": dose,
+      "time": time,
+      "remark": remark,
+      "note": note,
+      "portion_control": portionControl,
+      "healthy_tips": healthyTips,
+      "exercise": exercise,
+      "unit":unit,
+      "goal": goal,
+    });
+
+    if (photo != null && photo.path.isNotEmpty) {
+      var mimeType = photo.path.split('.').last; // e.g., jpg, png
+      request.files.add(await http.MultipartFile.fromPath(
+        'photo',
+        photo.path,
+        contentType: MediaType('image', mimeType), // Set the correct MIME type
+      ));
+    }
+
+    request.headers.addAll(headers);
+
+    try {
+      http.StreamedResponse response = await request.send();
+      // Print the request details for debugging
+      print('Request URL: ${request.url}');
+      print('Request Method: ${request.method}');
+      print('Request Headers: ${request.headers}');
+      print('Request Fields: ${request.fields}');
+      print('Request Files: ${request.files}');
+
+      if (response.statusCode == 200) {
+        var responseBody = await response.stream.bytesToString();
+        print('Response Body: $responseBody');
+        // await getMemberList(); // <-- First update the data
+
+        Get.back();
+        update();
+        // Get.to(DashboardScreen(pageIndex: 0));
+
+        return jsonDecode(responseBody);
+      } else {
+        var responseBody = await response.stream.bytesToString();
+        print('Error: ${response.reasonPhrase}');
+        print('Response Body: $responseBody');
+        // await getMemberList(); // <-- First update the data
+
+        Get.back();
+        update();
+        return false;
+      }
+    } catch (e) {
+      print('Exception: $e');
+      // await getMemberList(); // <-- First update the data
+
+      Get.back();
+      update();
+      return false;
+    } finally {
+      // Get.find<AuthController>().profileDetailsApi();
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
+
 
 
 }

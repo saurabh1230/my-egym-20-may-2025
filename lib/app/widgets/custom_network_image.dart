@@ -43,7 +43,7 @@ class CustomNetworkImageWidget extends StatelessWidget {
             Center(child: CircularProgressIndicator()),
         errorWidget: (context, url, error) => Padding(
           padding: EdgeInsets.all(imagePadding ?? 0),
-          child: SvgPicture.asset(
+          child: Image.asset(
               placeholder.isNotEmpty
                   ? placeholder
                   : isProfilePlaceHolder!

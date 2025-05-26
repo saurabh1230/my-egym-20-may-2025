@@ -11,6 +11,8 @@ import 'package:myegym/utils/sizeboxes.dart';
 import 'package:myegym/utils/styles.dart';
 import 'package:get/get.dart';
 
+import '../../widgets/add_workout_goal_dialog.dart';
+
 class OwnerDrawer extends StatelessWidget {
   const OwnerDrawer({super.key});
 
@@ -52,6 +54,16 @@ class OwnerDrawer extends StatelessWidget {
                             isBackButton: true,
                           ));
                     }),
+                Divider(),
+                text(
+                    title: 'Add Workout Goals',
+                    tap: () {
+                      Get.dialog(AddWorkoutGoalDialog(
+                        title: "Add Workout Goal",
+                        icon: Icons.sports_gymnastics,));
+                     
+                    }),
+
                 sizedBox5(),
                 Divider(),
                 text(

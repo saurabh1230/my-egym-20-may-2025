@@ -40,107 +40,118 @@ class TrainerWorkoutScreen extends StatelessWidget {
                     style: notoSansRegular.copyWith(color: Colors.white),
                   ),
                 )
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.all(Dimensions.paddingSizeDefault),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CustomButtonWidget(
-                                iconColor: Theme.of(context).primaryColor,
-                                buttonText: "Filter",
-                                fontSize: Dimensions.fontSize14,
-                                textColor: Theme.of(context).primaryColor,
-                                icon: Icons.tune,
-                                onPressed: () {},
-                                transparent: true,
-                              ),
-                            ),
-                            sizedBoxW10(),
-                            Expanded(
-                              child: CustomButtonWidget(
-                                buttonText: "Add New Workout",
-                                fontSize: Dimensions.fontSize14,
-                                icon: Icons.add,
-                                iconColor: Colors.white,
-                                onPressed: () {
-                                  Get.to(() => AddWorkoutScreen());
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                        sizedBoxDefault(),
-                        GetBuilder<WorkoutController>(
-                          builder: (controller) => Column(
+              : Stack(
+                children: [
+                  SizedBox(height: Get.size.height,
+                    child: SingleChildScrollView(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                          child: Column(
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  _buildTabItem(() {
-                                    controller.goToPage(0);
-                                  }, "Beginner", 0,
-                                      controller), // Pass the controller
-                                  _buildTabItem(() {
-                                    controller.goToPage(1);
-                                  }, "Intermediate", 1,
-                                      controller), // Pass the controller
-                                  _buildTabItem(() {
-                                    controller.goToPage(2);
-                                  }, "Advanced", 2,
-                                      controller) // Pass the controller
-                                ],
-                              ),
-                              sizedBox10(),
-                              SizedBox(
-                                height: Get.size.height,
-                                child: PageView(
-                                  controller: controller.pageController,
-                                  onPageChanged: (index) {
-                                    controller.updateTabIndex(
-                                        index); // Update UI on swipe
-                                  },
+                              sizedBoxDefault(),
+                              GetBuilder<WorkoutController>(
+                                builder: (controller) => Column(
                                   children: [
-                                    BeginnerWorkouts(
-                                      workouts: list
-                                          .where((item) => item['level'] == 1)
-                                          .toList(),
-                                    ), // Beginner
-                                    BeginnerWorkouts(
-                                      workouts: list
-                                          .where((item) => item['level'] == 2)
-                                          .toList(),
-                                    ), // Intermediate
-                                    BeginnerWorkouts(
-                                      workouts: list
-                                          .where((item) => item['level'] == 3)
-                                          .toList(),
-                                    ), //
-                                    // BeginnerWorkouts(
-                                    //   workouts: list,
-                                    // ),
-                                    // BeginnerWorkouts(
-                                    //   workouts: list,
-                                    // ),
-                                    // BeginnerWorkouts(
-                                    //   workouts: list,
-                                    // ),
-                                    // // IntermidateWorkout(),
-                                    // // AdvancedWorkout(),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        _buildTabItem(() {
+                                          controller.goToPage(0);
+                                        }, "Beginner", 0,
+                                            controller), // Pass the controller
+                                        _buildTabItem(() {
+                                          controller.goToPage(1);
+                                        }, "Intermediate", 1,
+                                            controller), // Pass the controller
+                                        _buildTabItem(() {
+                                          controller.goToPage(2);
+                                        }, "Advanced", 2,
+                                            controller) // Pass the controller
+                                      ],
+                                    ),
+                                    sizedBox10(),
+                                    SizedBox(
+                                      height: Get.size.height,
+                                      child: PageView(
+                                        controller: controller.pageController,
+                                        onPageChanged: (index) {
+                                          controller.updateTabIndex(
+                                              index); // Update UI on swipe
+                                        },
+                                        children: [
+                                          BeginnerWorkouts(
+                                            workouts: list
+                                                .where((item) => item['level'] == 1)
+                                                .toList(), title: 'Beginner',
+                                          ), // Beginner
+                                          BeginnerWorkouts(
+                                            workouts: list
+                                                .where((item) => item['level'] == 2)
+                                                .toList(), title: 'Intermediate',
+                                          ), // Intermediate
+                                          BeginnerWorkouts(
+                                            workouts: list
+                                                .where((item) => item['level'] == 3)
+                                                .toList(), title: 'Advance',
+                                          ), //
+                                          // BeginnerWorkouts(
+                                          //   workouts: list,
+                                          // ),
+                                          // BeginnerWorkouts(
+                                          //   workouts: list,
+                                          // ),
+                                          // BeginnerWorkouts(
+                                          //   workouts: list,
+                                          // ),
+                                          // // IntermidateWorkout(),
+                                          // // AdvancedWorkout(),
+                                        ],
+                                      ),
+                                    )
                                   ],
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
+                      ),
+                  ),
+                  Positioned(
+                    bottom: Dimensions.paddingSizeDefault,
+                    left: Dimensions.paddingSizeDefault,
+                    right: Dimensions.paddingSizeDefault,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: CustomButtonWidget(
+                            iconColor: Theme.of(context).primaryColor,
+                            buttonText: "Filter",
+                            fontSize: Dimensions.fontSize14,
+                            textColor: Theme.of(context).primaryColor,
+                            icon: Icons.tune,
+                            onPressed: () {},
+                            transparent: true,
+                          ),
+                        ),
+                        sizedBoxW10(),
+                        Expanded(
+                          child: CustomButtonWidget(
+                            buttonText: "Add New Workout",
+                            fontSize: Dimensions.fontSize14,
+                            icon: Icons.add,
+                            iconColor: Colors.white,
+                            onPressed: () {
+                              Get.to(() => AddWorkoutScreen());
+                            },
+                          ),
+                        )
                       ],
                     ),
                   ),
-                );
+                ],
+              );
         }));
   }
 

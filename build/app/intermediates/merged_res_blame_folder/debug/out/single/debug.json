@@ -1,7 +1,23 @@
 [
     {
+        "merged": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-merged_res-41:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-main-36:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
         "merged": "com.invoidea.myegym.app-merged_res-41:/mipmap-xxxhdpi_ic_launcher.png.flat",
         "source": "com.invoidea.myegym.app-main-36:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-merged_res-41:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-main-36:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-merged_res-41:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-main-36:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-merged_res-41:/drawable-v21_launch_background.xml.flat",
+        "source": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-main-36:/drawable-v21/launch_background.xml"
     },
     {
         "merged": "com.invoidea.myegym.app-merged_res-41:/mipmap-xhdpi_ic_launcher.png.flat",
@@ -20,7 +36,11 @@
         "source": "com.invoidea.myegym.app-main-36:/mipmap-hdpi/ic_launcher.png"
     },
     {
-        "merged": "com.invoidea.myegym.app-merged_res-41:/drawable-v21_launch_background.xml.flat",
-        "source": "com.invoidea.myegym.app-main-36:/drawable-v21/launch_background.xml"
+        "merged": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-merged_res-41:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-main-36:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-merged_res-41:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "/Users/iitpl/.gradle/daemon/8.3/com.invoidea.myegym.app-main-36:/mipmap-xxhdpi/ic_launcher.png"
     }
 ]

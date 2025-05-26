@@ -62,6 +62,7 @@ class AddWorkoutScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.find<OwnerController>().getActivityList();
       Get.find<OwnerController>().getSubActivityList();
+  Get.find<OwnerController>().getWorkoutGoalApi();
     });
 
     return SafeArea(
@@ -232,14 +233,63 @@ class AddWorkoutScreen extends StatelessWidget {
                             validation: helperControl.validate,
                           ),
                           sizedBoxDefault(),
-                          UnderlineTextfield(
+                          sizedBoxDefault(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Goals',
+                                style: TextStyle(
+                                    fontSize: 12.0,
+                                    color:
+                                    const Color.fromRGBO(117, 117, 117, 1)),
+                              ),
+                              Obx(() =>
+                                  DropdownButtonFormField<Map<String, dynamic>>(
+                                    decoration: const InputDecoration(
+                                      border: UnderlineInputBorder(),
+                                    ),
+                                    value: ownerControl
+                                        .selectedGoal.value.isNotEmpty
+                                        ? ownerControl.selectedGoal.value
+                                        : null, // Ensure it's a valid Map<String, dynamic> or null
+                                    items: (ownerControl.workoutGoalList ?? [])
+                                        .map((trainerData) {
+                                      return DropdownMenuItem<
+                                          Map<String, dynamic>>(
+                                        // Use Map<String, dynamic> as value type
+                                        value:
+                                        trainerData, // Assign the 'trainer' map to the value
+                                        child: Text(
+                                            trainerData?["name"] ?? "Unknown"),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) {
+                                      ownerControl.selectedGoal.value =
+                                          newValue ??
+                                              {}; // Store raw data directly
+                                      ownerControl.selectGoalId(newValue?[
+                                      "id"]); // Access data directly as map
 
-                            label: 'Goals',
-                            hint: 'Goals',
-                            controller: goalController,
-                            showSuffixIcon: false,
-                            validation: helperControl.validate,
+                                      print(ownerControl.selectedGoalID);
+                                    },
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please select an Workout Goal';
+                                      }
+                                      return null;
+                                    },
+                                  ))
+                            ],
                           ),
+                          // UnderlineTextfield(
+                          //
+                          //   label: 'Goals',
+                          //   hint: 'Goals',
+                          //   controller: goalController,
+                          //   showSuffixIcon: false,
+                          //   validation: helperControl.validate,
+                          // ),
                           sizedBoxDefault(),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -542,7 +592,7 @@ class AddWorkoutScreen extends StatelessWidget {
                                           startDate: startingDateController.text,
                                           endDate: endingDateController.text,
                                           notes: noteController.text,
-                                          goals: goalController.text,
+                                          goals: ownerControl.selectedGoalID.toString(),
                                           level: level.value == "Beginner" ?
                                           "1" : level.value == "intermediate" ? "2" :
                                           "3",
