@@ -23,6 +23,20 @@ class MemberController extends GetxController {
 
   MemberController({required this.memberRepo});
 
+
+  Rx<dynamic> selectedMember = Rx<dynamic>({});
+  // final Rx<TrainerModel?> selectedTrainer = Rx<TrainerModel?>(null);
+  int _selectedMemberID = 0;
+
+
+  int get selectedMemberID => _selectedMemberID;
+
+  void selectMemberId(int val) {
+    _selectedMemberID = val;
+    update();
+  }
+
+
   List<dynamic>? _memberList;
   List<dynamic>? get memberList => _memberList;
 
@@ -45,14 +59,24 @@ class MemberController extends GetxController {
 
           // Directly access 'data' as a List<dynamic>
           List<dynamic> trainerDataList = responseData["data"];
+          if (trainerDataList.isNotEmpty) {
+            var firstItem = trainerDataList[0];
 
-          print("🎯 Trainer List Length: ${trainerDataList.length}");
+            print("🎯 First getMemberList info: $firstItem");
+
+            selectedMember.value = firstItem;
+            _selectedMemberID = firstItem["id"];
+          }
+
+          print("🎯 getMemberList List Length: ${trainerDataList.length}");
+
+          print("🎯 getMemberList List Length: ${trainerDataList.length}");
           _memberList = trainerDataList; // Store the entire trainer list
         } else {
           print("⚠️ Response status is not success");
           showCustomSnackBar(
             Get.context!,
-            responseData["message"] ?? 'Failed to fetch trainer list',
+            responseData["message"] ?? 'Failed to fetch getMemberList list',
             isError: true,
           );
         }

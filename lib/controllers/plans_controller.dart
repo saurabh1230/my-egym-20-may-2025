@@ -125,6 +125,20 @@ class PlansController extends GetxController {
     }
   }
 
+
+  Rx<dynamic> selectedDietPlan = Rx<dynamic>({});
+  // final Rx<TrainerModel?> selectedTrainer = Rx<TrainerModel?>(null);
+  int _selectedDietPlanId = 0;
+
+
+  int get selectedDietPlanId => _selectedDietPlanId;
+
+  void selectDietPlanId(int val) {
+    _selectedDietPlanId = val;
+    update();
+  }
+
+
   List<dynamic>? _dietPlanListing;
   List<dynamic>? get dietPlanListing => _dietPlanListing;
 
@@ -147,6 +161,15 @@ class PlansController extends GetxController {
 
           // Directly access 'data' as a List<dynamic>
           List<dynamic> data = responseData["data"];
+
+          if (data.isNotEmpty) {
+            var firstItem = data[0];
+
+            print("🎯 First _dietListing info: $firstItem");
+
+            selectedDietPlan.value = firstItem;
+            _selectedDietPlanId = firstItem["id"];
+          }
 
           print("🎯 _dietListing List Length: ${data.length}");
           _dietPlanListing = data;
@@ -174,6 +197,37 @@ class PlansController extends GetxController {
     } finally {
       LoadingDialog.hideLoading();
       update();
+    }
+  }
+
+
+  Future<void> addMealPlan({required List<dynamic> mealPlans}) async {
+    print('check');
+
+    var url = Uri.parse('${AppConstants.baseUrl}meal-plan/store');
+
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken()}',
+    };
+
+    var body = jsonEncode(mealPlans);
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+
+        print("✅ Success: ${response.body}");
+      } else {
+        print("❌ Error: ${response.statusCode} - ${response.reasonPhrase}");
+        print("Response body: ${response.body}");
+      }
+    } catch (e) {
+      print("⚠️ Exception: $e");
+    } finally {
+
     }
   }
 

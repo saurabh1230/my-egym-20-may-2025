@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myegym/app/owner/drawer/diet_plan.dart';
+import 'package:myegym/app/owner/drawer/meal_plan_screen.dart';
 import 'package:myegym/app/owner/drawer/my_purchase.dart';
 import 'package:myegym/app/owner/drawer/pt_plans.dart';
 import 'package:myegym/app/trainer/workouts/workout_screen.dart';
@@ -12,6 +13,7 @@ import 'package:myegym/utils/styles.dart';
 import 'package:get/get.dart';
 
 import '../../widgets/add_workout_goal_dialog.dart';
+import '../widgets/add_food_dialog.dart';
 
 class OwnerDrawer extends StatelessWidget {
   const OwnerDrawer({super.key});
@@ -54,6 +56,7 @@ class OwnerDrawer extends StatelessWidget {
                             isBackButton: true,
                           ));
                     }),
+                sizedBox5(),
                 Divider(),
                 text(
                     title: 'Add Workout Goals',
@@ -63,6 +66,16 @@ class OwnerDrawer extends StatelessWidget {
                         icon: Icons.sports_gymnastics,));
                      
                     }),
+                sizedBox5(),
+                Divider(),
+                text(
+                    title: 'Add Food',
+                    tap: () {
+                      Get.dialog(AddFoodDialog(
+                        title: "Add Food",
+                       ));
+
+                    }),
 
                 sizedBox5(),
                 Divider(),
@@ -70,6 +83,13 @@ class OwnerDrawer extends StatelessWidget {
                     title: 'Diet Plans',
                     tap: () {
                       Get.to(() => OwnerDietPlan());
+                    }),
+                sizedBox5(),
+                Divider(),
+                text(
+                    title: 'Meal Plans',
+                    tap: () {
+                      Get.to(() => MealPlanScreen());
                     }),
                 sizedBox5(),
                 Divider(),

@@ -26,6 +26,9 @@ class AppConstants {
   static const String workoutGoalUrl = 'workout-goal';
   static const String addWorkoutGoal = 'workout-goal/store';
   static const String foodListingUrl = 'food';
+  static const String addFoodUrl = 'food/store';
+  static const String addDietPlanUrl = 'diet/store';
+  static const String getMealPlanUrl = 'meal-plan';
   // Shared Key
   static const String theme = 'theme';
   static const String intro = 'intro';

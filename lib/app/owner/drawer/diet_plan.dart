@@ -4,8 +4,10 @@ import 'package:get/state_manager.dart';
 import 'package:myegym/app/owner/drawer/components/diet_plan_component.dart';
 import 'package:myegym/app/widgets/custom_app.dart';
 import 'package:myegym/app/widgets/custom_button.dart';
+import 'package:myegym/app/widgets/custom_containers.dart';
 import 'package:myegym/app/widgets/custom_network_image.dart';
 import 'package:myegym/controllers/plans_controller.dart';
+import 'package:myegym/data/repo/plan_repo.dart';
 import 'package:myegym/utils/dimensions.dart';
 import 'package:myegym/utils/sizeboxes.dart';
 import 'package:myegym/utils/styles.dart';
@@ -18,6 +20,8 @@ class OwnerDietPlan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => PlanRepo(apiClient: Get.find()));
+    Get.lazyPut(() => PlansController(planRepo: Get.find()));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.find<PlansController>().getDietPlan();
     });
@@ -55,9 +59,18 @@ class OwnerDietPlan extends StatelessWidget {
                             children: [
                               Stack(
                                 children: [
-                                  CustomNetworkImageWidget(image: list[i]['image_url'].toString()),
+                                  Column( crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      CustomNetworkImageWidget(image: list[i]['image_url'].toString()),
+                                      sizedBox10(),
+                                      Text(list[i]['plan_name'].toString(),style: notoSansSemiBold.copyWith(
+                                        color: Colors.white
+                                      ),maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,)
+                                    ],
+                                  ),
                                   Positioned(
-                                    bottom: Dimensions.paddingSizeDefault,
+                                    bottom: Dimensions.paddingSize40,
                                     right: Dimensions.paddingSizeDefault,
                                     child: ElevatedButton(style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty.all<Color>(primaryRedColor), // your desired color

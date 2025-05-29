@@ -39,4 +39,34 @@ class OwnerRepo {
   Future<Response> getFoodListingRepo() async {
     return await apiClient.getData(AppConstants.foodListingUrl, method: "GET");
   }
+
+  Future<Response> addFoodItem({
+    required String foodName,
+    required String protein,
+    required String fats,
+    required String carbohydrates,
+    required String quantity,
+    required String calorie,
+    required String unit,
+    required String note,
+}) {
+    return apiClient.getData(
+      AppConstants.addFoodUrl,
+      body:  {
+        'food_name': foodName,
+        'protein': protein,
+        'fats': fats,
+        'carbohydrates': carbohydrates,
+        'quantity': quantity,
+        'calorie': calorie,
+        'unit': unit,
+        'note': note
+      }
+    );
+  }
+
+  Future<Response> getMealPlansApi() async {
+    return await apiClient.getData(AppConstants.getMealPlanUrl, method: "GET");
+  }
+
 }

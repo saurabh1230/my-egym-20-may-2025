@@ -17,6 +17,8 @@ import 'package:myegym/utils/sizeboxes.dart';
 import 'package:myegym/utils/styles.dart';
 import 'package:get/get.dart';
 
+import '../../data/repo/owner_repo.dart';
+
 class CreatePlanBottomsheet extends StatelessWidget {
 
 
@@ -29,6 +31,7 @@ class CreatePlanBottomsheet extends StatelessWidget {
   final RxString mealTime = 'Breakfast'.obs;
   final RxString quantity = '100'.obs;
   final doseController = TextEditingController();
+  final planNameController = TextEditingController();
   final supplementController = TextEditingController();
   final remarksController = TextEditingController();
   final noteController = TextEditingController();
@@ -42,6 +45,9 @@ class CreatePlanBottomsheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => OwnerRepo(apiClient: Get.find()));
+    Get.lazyPut(() => OwnerController(ownerRepo: Get.find()));
+    Get.lazyPut(() => HelperController());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       print("Fetching data for CreatePlanBottomsheet");
       Get.find<OwnerController>().getWorkoutGoalApi();
@@ -62,7 +68,7 @@ class CreatePlanBottomsheet extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Create Plan',
+                    Text('Create Diet Plan',
                         style: notoSansSemiBold.copyWith(
                             color: Theme.of(context).primaryColor)),
                     sizedBox10(),
@@ -71,6 +77,13 @@ class CreatePlanBottomsheet extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            sizedBoxDefault(),
+                            UnderlineTextfield(
+                              controller: planNameController,
+                              label: 'Plan Name',
+                              hint: 'Plan Name',
+                            ),
+                            sizedBoxDefault(),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -220,7 +233,7 @@ class CreatePlanBottomsheet extends StatelessWidget {
                                 ),
                                 sizedBoxW7(),
                                 Flexible(flex: 3,
-                                  child: UnderlineTextfield(
+                                  child: UnderlineTextfield(keyboardType: TextInputType.number,
                                     controller: doseController,
                                     label: 'Dose In Grams',
                                     hint: 'Dose In Grams',
@@ -236,12 +249,14 @@ class CreatePlanBottomsheet extends StatelessWidget {
                             ),
                             sizedBoxDefault(),
                             UnderlineTextfield(
+                              maxLines: 2,
                               controller: remarksController,
                               label: 'Remarks',
                               hint: 'Remarks',
                             ),
                             sizedBoxDefault(),
                             UnderlineTextfield(
+                              maxLines: 3,
                               controller: noteController,
                               label: 'Note',
                               hint: 'Note',
@@ -327,7 +342,7 @@ class CreatePlanBottomsheet extends StatelessWidget {
                             sizedBoxDefault(),
                             UnderlineTextfield(
                               controller: portionController,
-                              label: 'Portions',
+                              label: 'Portions Instructions',
                               hint: 'Portions',
                             ), sizedBoxDefault(),
                             UnderlineTextfield(
@@ -335,11 +350,13 @@ class CreatePlanBottomsheet extends StatelessWidget {
                               label: 'Healthy Tips',
                               hint: 'Healthy Tips',
                             ),
+                            sizedBoxDefault(),
                             UnderlineTextfield(
                               controller: exerciseController,
                               label: 'Exercise',
                               hint: 'Exercise',
                             ),
+                            sizedBoxDefault(),
                             Center(
                               child: SizedBox(
                                 height: 120,
@@ -503,7 +520,7 @@ class CreatePlanBottomsheet extends StatelessWidget {
                                   onPressed: () {
                                     if (formKey.currentState!.validate()) {
                                       print("Form is valid! Calling API...");
-                                      ownerControl.addMemberApi(preference: preference.value ==
+                                      ownerControl.addDietPlanApi(preference: preference.value ==
                                           "Vegetarian" ? "1" : preference.value ==
                                           "Non-Vegetarian" ? "2" : preference.value ==
                                           "Vegan" ? "3" : "4" ,
@@ -519,7 +536,7 @@ class CreatePlanBottomsheet extends StatelessWidget {
                                           unit:  unit.value == "grm" ? "1" : "2",
                                           goal:ownerControl.selectedGoalID.toString(),
                                           photo: helperControl
-                                              .pickedDocument!);
+                                              .pickedDocument!, planName:planNameController.text.trim());
 
                                     }
                                   },

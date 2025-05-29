@@ -477,7 +477,8 @@ class OwnerController extends GetxController {
 
 
 
-  Future<dynamic> addMemberApi({
+  Future<dynamic> addDietPlanApi({
+    required String planName,
     required String preference,
     required String lifestyle,
     required String supplementName,
@@ -512,10 +513,11 @@ class OwnerController extends GetxController {
 
     var request = http.MultipartRequest(
       'POST', // Ensure PATCH method is what your API requires
-      Uri.parse('${AppConstants.baseUrl}members/store'),
+      Uri.parse('${AppConstants.baseUrl}${AppConstants.addDietPlanUrl}'),
     );
 
     request.fields.addAll({
+      "plan_name": planName,
       "preference": preference,
       "lifestyle": lifestyle,
       "supplement_name": supplementName,
@@ -582,6 +584,72 @@ class OwnerController extends GetxController {
       LoadingDialog.hideLoading();
       update();
     }
+  }
+
+
+
+  Future<void> addFoodItem({required String foodName,
+    required String protein,
+    required String fats,
+    required String carbohydrates,
+    required String quantity,
+    required String calorie,required String unit,
+    required String note,
+  }) async {
+    print('Fetching addFoodItem ================>');
+    LoadingDialog.showLoading();
+
+    try {
+      Response response = await ownerRepo.addFoodItem(
+          foodName: foodName,
+          protein: protein,
+          fats: fats,
+          carbohydrates: carbohydrates,
+          quantity: quantity,
+          calorie: calorie,
+          unit: unit,
+          note: note);
+
+      if (response.statusCode == 200) {
+
+        showCustomSnackBar(Get.context!, "Food Added Successfully");
+        Get.back();
+      } else {
+        showCustomSnackBar(Get.context!, "Food Added Successfully");
+        Get.back();
+        print("Failed to addFoodItem: ${response.statusCode}");
+      }
+    } catch (e) {
+      showCustomSnackBar(Get.context!, "Goal Added Successfully");
+      Get.back();
+      print("Exception occurred addFoodItem: $e");
+    }
+    LoadingDialog.hideLoading();
+    update();
+  }
+
+
+  List<dynamic>? _mealPlanList;
+  List<dynamic>? get mealPlanList => _mealPlanList;
+
+  Future<void> getMealList() async {
+    LoadingDialog.showLoading();
+    try {
+      Response response = await ownerRepo.getMealPlansApi();
+
+      if (response.statusCode == 200) {
+        final data = response.body;
+        _mealPlanList = data['mealPlan'];
+      } else {
+        print(
+            "Failed to load data getMealList: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Exception occurred getMealList: $e");
+    }
+
+    LoadingDialog.hideLoading();
+    update();
   }
 
 
