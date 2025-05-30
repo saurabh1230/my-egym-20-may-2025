@@ -20,7 +20,8 @@ class TrainerCard extends StatelessWidget {
   final Function() trashTap;
   final Function() edit;
   final Function() detailsTap;
-
+  final Function()? personalTrainerTap;
+  final bool? isTrainer;
   const TrainerCard(
       {super.key,
       required this.personImg,
@@ -35,7 +36,7 @@ class TrainerCard extends StatelessWidget {
       required this.data4,
       required this.trashTap,
         required this.edit,
-      required this.detailsTap});
+      required this.detailsTap, this.personalTrainerTap, this.isTrainer = false});
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +104,19 @@ class TrainerCard extends StatelessWidget {
                       ),
                     ))
               ],
-            )
+            ),
+            isTrainer! ?
+                SizedBox() :
+            TextButton(
+                onPressed: personalTrainerTap,
+                child: Text(
+                  "Assign Personal Trainer",
+                  style: notoSansSemiBold.copyWith(
+                    fontSize: Dimensions.fontSize14,
+                    color: Colors.red,
+                    decoration: TextDecoration.underline, // Add this line
+                  ),
+                ))
           ],
         ));
   }

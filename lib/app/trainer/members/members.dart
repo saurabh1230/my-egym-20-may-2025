@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myegym/app/owner/drawer/add_personal_trainer.dart';
 import 'package:myegym/app/owner/drawer/owner_drawer.dart';
 import 'package:myegym/app/trainer/members/components/add_member_screen.dart';
 import 'package:myegym/app/trainer/members/components/trainer_Card.dart';
@@ -18,7 +19,8 @@ import '../../widgets/confirmation_dialog.dart';
 import 'edit_member.dart';
 
 class MemberScreen extends StatelessWidget {
-  MemberScreen({super.key});
+  final bool? isFromTrainer;
+  MemberScreen({super.key, this.isFromTrainer = false});
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class MemberScreen extends StatelessWidget {
         key: _scaffoldKey,
         drawer: const OwnerDrawer(),
         appBar: CustomAppBar(
+          isLogo: true,
           title: "Members",
         ),
         body: GetBuilder<MemberController>(builder: (memberControl) {
@@ -70,7 +73,7 @@ class MemberScreen extends StatelessWidget {
                                 icon: Icons.add,
                                 iconColor: Colors.white,
                                 onPressed: () {
-                                  Get.to(() => AddMemberScreen());
+                                  Get.to(() => AddMemberScreen(isByTrainer: isFromTrainer,));
                                 },
                               ),
                             )
@@ -120,6 +123,9 @@ class MemberScreen extends StatelessWidget {
                                   detailsTap: () {},
                                   edit: () {
                                     Get.to(() => EditMemberScreen(memberList: member,));
+                                  },
+                                  personalTrainerTap: () {
+                                    Get.to(() => AddPersonalTrainer(memberID: member['id'].toString(),));
                                   },
                                 )
                               ],

@@ -31,6 +31,7 @@ class OwnerProfile extends StatelessWidget {
       key: _scaffoldKey,
       drawer: const OwnerDrawer(),
       appBar: CustomAppBar(
+        isLogo: true,
         title: "Profile",
       ),
       body: GetBuilder<OwnerController>(builder: (ownerControl) {

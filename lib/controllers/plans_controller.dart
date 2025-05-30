@@ -200,37 +200,58 @@ class PlansController extends GetxController {
     }
   }
 
-
   Future<void> addMealPlan({required List<dynamic> mealPlans}) async {
-    print('check');
+    LoadingDialog.showLoading();
+    update();
+    print('📤 Starting API Call: Add Meal Plan');
 
     var url = Uri.parse('${AppConstants.baseUrl}meal-plan/store');
-
+    print('🔗 URL: $url');
 
     var headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken()}',
     };
+    print('🧾 Headers: $headers');
 
     var body = jsonEncode(mealPlans);
+    print('📦 Request Body: $body');
 
     try {
       final response = await http.post(url, headers: headers, body: body);
 
-      if (response.statusCode == 200) {
+      print('📬 Response Status: ${response.statusCode}');
+      print('📨 Response Headers: ${response.headers}');
+      print('📄 Response Body: ${response.body}');
 
-        print("✅ Success: ${response.body}");
+      final data = jsonDecode(response.body);
+
+      if (data['success'] == true) {
+        LoadingDialog.hideLoading();
+        showCustomSnackBar(Get.context!, "Meal Plan Added Successfully");
       } else {
-        print("❌ Error: ${response.statusCode} - ${response.reasonPhrase}");
-        print("Response body: ${response.body}");
+        // Optional: Parse and display errors
+        String errorMsg = "Something went wrong";
+        if (data['errors'] != null && data['errors'].isNotEmpty) {
+          errorMsg = data['errors'].map((e) => e['message']).join("\n");
+        } else if (data['message'] != null) {
+          errorMsg = data['message'];
+        }
+
+        LoadingDialog.hideLoading();
+        showCustomSnackBar(Get.context!, errorMsg, isError: true);
       }
+
+      update();
     } catch (e) {
       print("⚠️ Exception: $e");
+      LoadingDialog.hideLoading();
+      showCustomSnackBar(Get.context!, "Failed to add meal plan. Please try again.", isError: true);
     } finally {
-
+      update();
+      print('🏁 API Call Finished');
     }
   }
-
 
 
 

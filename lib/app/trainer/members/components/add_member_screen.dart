@@ -18,7 +18,8 @@ import 'package:myegym/utils/sizeboxes.dart';
 import '../../../../utils/styles.dart';
 
 class AddMemberScreen extends StatelessWidget {
-  AddMemberScreen({super.key});
+  final bool? isByTrainer;
+  AddMemberScreen({super.key, this.isByTrainer = false});
   final TextEditingController memberNameController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -404,6 +405,8 @@ class AddMemberScreen extends StatelessWidget {
                                 ],
                               ),
                               sizedBoxDefault(),
+                              isByTrainer! ?
+                                  SizedBox() :
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -642,6 +645,7 @@ class AddMemberScreen extends StatelessWidget {
                                               "Please Add Profile Image and Identity Document");
                                         } else {
                                           memberControl.addMemberApi(
+                                            isAddedByTrainer: isByTrainer,
                                             fullName: memberNameController.text,
                                             dateOfBirth: dobController.text,
                                             gender: gender.value,

@@ -24,7 +24,7 @@ class _TrainerDashboardState extends State<TrainerDashboard> {
 
   final List<Widget> _widgetOptions = <Widget>[
     TrainerHome(),
-    MemberScreen(),
+    MemberScreen(isFromTrainer: true,),
     TrainerWorkoutScreen(),
     TrainerProfile(),
     // HomeScreen(),
@@ -73,10 +73,9 @@ class _TrainerDashboardState extends State<TrainerDashboard> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  Icons
-                      .group_rounded, // Flutter Material icon for members/group
+                  Icons.group_rounded, // Flutter Material icon for members/group
                 ),
-                label: 'Trainers',
+                label: 'Members',
               ),
               BottomNavigationBarItem(
                 icon: Icon(

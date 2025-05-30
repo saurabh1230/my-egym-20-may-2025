@@ -144,6 +144,7 @@ class MemberController extends GetxController {
     required String password,
     required XFile? photo,
     required XFile? identityproof,
+     bool? isAddedByTrainer = false,
   }) async {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
@@ -175,7 +176,7 @@ class MemberController extends GetxController {
       'phone_number': phoneNumber,
       'email_address': emailAddress,
       'address': address,
-      'trainer_id': trainerId,
+      // 'trainer_id': trainerId,
       'password': password,
       'zip_code': zipCode,
       'emergency_contact_name': emergencyContactName,
@@ -183,6 +184,11 @@ class MemberController extends GetxController {
       'emergency_contact_relationship': contactRelationship,
       'relationship': relationship,
     });
+
+    if (isAddedByTrainer == false) {
+      request.fields['trainer_id'] = trainerId;
+    }
+
 
     if (photo != null && photo.path.isNotEmpty) {
       var mimeType = photo.path.split('.').last; // e.g., jpg, png

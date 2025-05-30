@@ -16,15 +16,19 @@ import 'package:myegym/utils/images.dart';
 import 'package:myegym/utils/styles.dart';
 import 'package:flutter/material.dart';
 
-class TrainerHome extends StatelessWidget {
-  const TrainerHome({super.key});
+import '../trainer_drawer/trainer_drawer.dart';
 
+class TrainerHome extends StatelessWidget {
+   TrainerHome({super.key});
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: const TrainerDrawer(),
       appBar: CustomAppBar(
         title: "Welcome",
-        isLogo: true,
+
       ),
       body: SingleChildScrollView(
         child: Padding(

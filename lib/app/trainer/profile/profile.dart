@@ -42,6 +42,7 @@ class TrainerProfile extends StatelessWidget {
       drawer: const OwnerDrawer(),
       appBar: CustomAppBar(
         title: "Profile",
+        isLogo: true,
       ),
       body: GetBuilder<TrainerController>(builder: (trainerControl) {
         final detailsData = trainerControl.trainerProfile;

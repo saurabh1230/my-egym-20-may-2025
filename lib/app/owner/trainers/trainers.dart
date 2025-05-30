@@ -23,6 +23,7 @@ class OwnerTrainerScreen extends StatelessWidget {
       key: _scaffoldKey,
       drawer: const OwnerDrawer(),
       appBar: CustomAppBar(
+        isLogo: true,
         title: "Trainers",
       ),
       body: SingleChildScrollView(
