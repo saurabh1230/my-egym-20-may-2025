@@ -103,4 +103,8 @@ class OwnerRepo {
     );
   }
 
+  Future<Response> getPersonalTrainingPlanRepo() async {
+    return await apiClient.getData(AppConstants.personalTrainingPlanListingUrl, method: "GET");
+  }
+
 }

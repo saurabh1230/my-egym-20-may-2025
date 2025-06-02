@@ -655,4 +655,73 @@ class OwnerController extends GetxController {
 
 
 
+  Rx<dynamic> selectedPersonalPlan = Rx<dynamic>({});
+  // final Rx<TrainerModel?> selectedTrainer = Rx<TrainerModel?>(null);
+  int _selectedPersonalPlanId = 0;
+
+
+  int get selectedPersonalPlanId => _selectedPersonalPlanId;
+
+  void selectPersonalPlanId(int val) {
+    _selectedPersonalPlanId = val;
+    update();
+  }
+
+  List<dynamic>? _personalPlan;
+  List<dynamic>? get personalPlan => _personalPlan;
+
+  Future<void> getPersonalPlanList() async {
+    try {
+      LoadingDialog.showLoading();
+      update();
+
+      print("🔥 Calling _personalPlan API...");
+      Response response = await ownerRepo.getPersonalTrainingPlanRepo();
+
+      print("📥 Full response _personalPlan: ${response.bodyString}");
+      print("📡 Status code _personalPlan: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        var responseData = response.body;
+
+        // Directly access 'data' as a List<dynamic>
+        List<dynamic> data = responseData["data"];
+
+        if (data.isNotEmpty) {
+          var firstItem = data[0];
+
+          print("🎯 First data _personalPlan: $firstItem");
+
+          // selectedActivity.value = firstItem;
+          // _selectedActivityId = firstItem["id"];
+        }
+
+        print("🎯 _personalPlan List Length: ${data.length}");
+        _personalPlan = data; // Store the entire trainer list
+      } else {
+        print("❌ Non-200 response");
+        var responseData = response.body;
+        showCustomSnackBar(
+          Get.context!,
+          responseData["message"] ?? 'Error fetching trainer list',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      print("🚨 Exception: $e");
+      showCustomSnackBar(Get.context!, 'Something went wrong: $e',
+          isError: true);
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
+
 }
+
+
+
+
+
+

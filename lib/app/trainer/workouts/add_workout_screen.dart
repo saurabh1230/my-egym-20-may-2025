@@ -210,8 +210,6 @@ class AddWorkoutScreen extends StatelessWidget {
                                     await helperControl
                                         .selectEndDDateFunction(context);
                                     endingDateController.text = DateConverter.formatDateToYMD(helperControl.selectedEndDate.replaceAll("/", "-"));
-
-
                                   },
                                   label: 'Ending Date',
                                   hint: 'Ending Date',

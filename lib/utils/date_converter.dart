@@ -59,7 +59,7 @@ class DateConverter {
       return DateFormat(outputFormat).format(dateTime);
     } catch (e) {
       print('Date formatting error: $e');
-      return inputDate; // fallback
+      return inputDate;
     }
   }
 

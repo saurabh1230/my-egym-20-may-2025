@@ -30,6 +30,7 @@ class AppConstants {
   static const String addDietPlanUrl = 'diet/store';
   static const String getMealPlanUrl = 'meal-plan';
   static const String addPersonalTrainerUrl = 'personal-training/store';
+  static const String personalTrainingPlanListingUrl = 'personal-training';
   // Shared Key
   static const String theme = 'theme';
   static const String intro = 'intro';
