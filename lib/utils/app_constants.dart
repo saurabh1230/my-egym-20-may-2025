@@ -32,7 +32,7 @@ class AppConstants {
   static const String addPersonalTrainerPlanUrl = 'personal-training/store';
   static const String personalTrainingPlanListingUrl = 'personal-training';
   static const String packageDurationUrl = 'package';
-
+  static const String packageDurationStoreUrl = 'package/store';
   // Shared Key
   static const String theme = 'theme';
   static const String intro = 'intro';

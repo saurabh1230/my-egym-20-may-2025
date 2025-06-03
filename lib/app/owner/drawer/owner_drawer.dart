@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myegym/app/owner/drawer/diet_plan.dart';
 import 'package:myegym/app/owner/drawer/meal_plan_screen.dart';
 import 'package:myegym/app/owner/drawer/my_purchase.dart';
+import 'package:myegym/app/owner/drawer/package_duration.dart';
 import 'package:myegym/app/owner/drawer/personal_training_plans.dart';
 import 'package:myegym/app/owner/drawer/pt_plans.dart';
 import 'package:myegym/app/trainer/workouts/workout_screen.dart';
@@ -99,6 +100,14 @@ class OwnerDrawer extends StatelessWidget {
                     title: 'Personal Training Plans',
                     tap: () {
                       Get.to(() => PersonalTrainingPlans(
+
+                      ));
+                    }),
+                Divider(),
+                text(
+                    title: 'Package Duration',
+                    tap: () {
+                      Get.to(() => PackageDuration(
 
                       ));
                     }),

@@ -142,4 +142,18 @@ class OwnerRepo {
     return await apiClient.getData(AppConstants.packageDurationUrl, method: "GET");
   }
 
+
+  Future<Response> addPackageRepo({
+    required String name,
+
+  }) {
+    return apiClient.getData(
+        AppConstants.packageDurationStoreUrl,
+        body:  {
+          'name': name,
+        }
+    );
+  }
+
+
 }

@@ -1054,6 +1054,36 @@ class OwnerController extends GetxController {
   //   }
   // }
 
+  Future<void> addPackageDuration({required String name}) async {
+    print('➡️ Calling addPackageDuration...');
+    LoadingDialog.showLoading();
+
+    try {
+      Response response = await ownerRepo.addPackageRepo(name: name);
+
+      print("📥 Response Body: ${response.body}");
+      print("📡 Status Code: ${response.statusCode}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final body = response.body;
+        if (body != null && body['status'] == 'success') {
+          showCustomSnackBar(Get.context!, body['message'] ?? 'Package added!');
+          Get.back();
+        } else {
+          showCustomSnackBar(Get.context!, 'Unexpected response.', isError: true);
+        }
+      } else {
+        showCustomSnackBar(Get.context!, 'Failed with code ${response.statusCode}', isError: true);
+      }
+    } catch (e) {
+      print("🔥 Exception occurred: $e");
+      showCustomSnackBar(Get.context!, 'Network error occurred', isError: true);
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
 
 }
 
