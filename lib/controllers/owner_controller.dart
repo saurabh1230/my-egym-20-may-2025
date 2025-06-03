@@ -718,6 +718,343 @@ class OwnerController extends GetxController {
   }
 
 
+  // Future<void> addPersonalTrainerPlan({
+  //   required String trainingGoals,
+  //   required String trainingPlanName,
+  //   required String trainingFrequency,
+  //   required String sessionDuration,
+  //   required String trainingStartDate,
+  //   required String trainingEndDate,
+  //   required String paidAmount,
+  //   required String dueAmount,
+  //   required String discount,
+  // }) async {
+  //   print('Fetching addPersonalTrainerPlan ================>');
+  //   LoadingDialog.showLoading();
+  //
+  //   // Prepare request body
+  //   Map<String, dynamic> requestBody = {
+  //     "training_goals": trainingGoals,
+  //     "training_plan": trainingPlanName,
+  //     "training_frequency": trainingFrequency,
+  //     "session_duration": sessionDuration,
+  //     "training_start_date": trainingStartDate,
+  //     "training_end_date": trainingEndDate,
+  //     "paid_amount": paidAmount,
+  //     "due_amount": dueAmount,
+  //     "discount": discount,
+  //
+  //   };
+  //
+  //   // Print request body as JSON
+  //   print("Raw Request JSON addPersonalTrainerPlan : ${jsonEncode(requestBody)}");
+  //
+  //   try {
+  //     Response response = await ownerRepo.addPersonalPlanRepo(
+  //       trainingGoals: trainingGoals,
+  //       trainingPlanName: trainingPlanName,
+  //       trainingFrequency: trainingFrequency,
+  //       sessionDuration: sessionDuration,
+  //       trainingStartDate: trainingStartDate,
+  //       trainingEndDate: trainingEndDate,
+  //       paidAmount: paidAmount,
+  //       dueAmount: dueAmount,
+  //       discount: discount,
+  //     );
+  //
+  //     await getPersonalPlanList();
+  //     showCustomSnackBar(Get.context!, "Plan Created Successfully");
+  //     Get.back();
+  //   } catch (e) {
+  //     showCustomSnackBar(Get.context!, "Plan Created Successfully");
+  //     Get.back();
+  //     print("Exception occurred Plan Created Successfully : $e");
+  //   }
+  //   LoadingDialog.hideLoading();
+  //   update();
+  // }
+
+
+  // Future<void> addPersonalTrainerPlan({
+  //   required String trainingGoals,
+  //   required String trainingPlanName,
+  //   required String trainingFrequency,
+  //   required String sessionDuration,
+  //   required String trainingStartDate,
+  //   required String trainingEndDate,
+  //   required String paidAmount,
+  //   required String dueAmount,
+  //   required String discount,
+  // }) async {
+  //   print('Fetching addPersonalTrainerPlan ================>');
+  //   LoadingDialog.showLoading();
+  //
+  //   try {
+  //     Response response = await ownerRepo.addPersonalPlanRepo(
+  //         trainingGoals: trainingGoals,
+  //         trainingPlanName: trainingPlanName,
+  //         trainingFrequency: trainingFrequency,
+  //         sessionDuration: sessionDuration,
+  //         trainingStartDate: trainingStartDate,
+  //         trainingEndDate: trainingEndDate,
+  //         paidAmount: paidAmount,
+  //         dueAmount: dueAmount,
+  //         discount: discount
+  //     );
+  //
+  //     if (response.statusCode == 201) {
+  //       await getPersonalPlanList();
+  //       showCustomSnackBar(Get.context!, "Plan Created Successfully");
+  //       Get.back();
+  //     } else {
+  //       await getPersonalPlanList();
+  //       showCustomSnackBar(Get.context!, "Plan Created Successfully");
+  //       Get.back();
+  //       print("Failed to Plan Created Successfully: ${response.statusCode}");
+  //     }
+  //   } catch (e) {
+  //     showCustomSnackBar(Get.context!, "Plan Created Successfully");
+  //     Get.back();
+  //     print("Exception occurred Plan Created Successfully : $e");
+  //   }
+  //   LoadingDialog.hideLoading();
+  //   update();
+  // }
+
+
+
+  Rx<dynamic> selectedPlanDuration = Rx<dynamic>({});
+  // final Rx<TrainerModel?> selectedTrainer = Rx<TrainerModel?>(null);
+  int _selectedPlanDurationID = 0;
+
+
+  int get selectedPlanDurationID => _selectedPlanDurationID;
+
+  void selectPlanDurationId(int val) {
+    _selectedPlanDurationID = val;
+    update();
+  }
+
+  List<dynamic>? _planDurationList;
+  List<dynamic>? get planDurationList => _planDurationList;
+
+  Future<void> getPlanDurationList() async {
+    try {
+      LoadingDialog.showLoading();
+      update();
+
+      print("🔥 Calling getPlanDurationList API...");
+      Response response = await ownerRepo.getPlanDuration();
+
+      print("📥 Full response getPlanDurationList: ${response.bodyString}");
+      print("📡 Status code getPlanDurationList: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        var responseData = response.body;
+
+
+        List<dynamic> data = responseData["data"];
+        if (data.isNotEmpty) {
+          var firstItem = data[0];
+
+          print("🎯 First getPlanDurationList info: $firstItem");
+
+          selectedPlanDuration.value = firstItem;
+          _selectedPlanDurationID = firstItem["id"];
+        }
+
+
+        _planDurationList = data;
+
+      } else {
+        print("❌ Non-200 response getPlanDurationList");
+        var responseData = response.body;
+        showCustomSnackBar(
+          Get.context!,
+          responseData["message"] ?? 'Error fetching getPlanDurationList',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      print("🚨 Exception: $e");
+      showCustomSnackBar(Get.context!, 'Something went wrong getPlanDurationList: $e',
+          isError: true);
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
+  Future<void> addPersonalTrainerPlan({
+    required String trainingGoals,
+    required String trainingPlanName,
+    required String trainingFrequency,
+    required String sessionDuration,
+    required String trainingStartDate,
+    required String trainingEndDate,
+    required String paidAmount,
+    required String discount,
+}) async {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken().toString()}'
+    };
+
+    var request = http.Request(
+      'POST',
+      Uri.parse('${AppConstants.baseUrl}${AppConstants.addPersonalTrainerPlanUrl}'),
+    );
+
+    request.body = json.encode({
+      "training_goals": trainingGoals,
+      "training_plan": trainingPlanName,
+      "training_frequency": trainingFrequency,
+      "session_duration": sessionDuration,
+      "training_start_date": trainingStartDate,
+      "training_end_date": trainingEndDate,
+      "paid_amount": paidAmount,
+      "due_amount":"0",
+      "discount": discount,
+      "payment_method": "online"
+    });
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 201) {
+      final responseData = await response.stream.bytesToString();
+      final jsonData = jsonDecode(responseData);
+
+      if (jsonData['status'] == 'success') {
+        showCustomSnackBar(Get.context!, jsonData['message'] ?? "Plan Created Successfully");
+        await getPersonalPlanList();
+                Get.back();
+        print(jsonData['message']); // e.g. "Personal Training Plan created successfully!"
+      } else {
+        print('Unexpected response format or status not success');
+      }
+    } else {
+      print('Request failed: ${response.statusCode} - ${response.reasonPhrase}');
+    }
+  }
+
+  //
+  // Future<void> addPersonalTrainerPlan({
+  //   required String trainingGoals,
+  //   required String trainingPlanName,
+  //   required String trainingFrequency,
+  //   required String sessionDuration,
+  //   required String trainingStartDate,
+  //   required String trainingEndDate,
+  //   required String paidAmount,
+  //   required String dueAmount,
+  //   required String discount,
+  // }) async {
+  //   print('add addPersonalTrainerPlan ================>');
+  //   LoadingDialog.showLoading();
+  //
+  //   try {
+  //     Response response = await ownerRepo.addPersonalPlanRepo(
+  //       trainingGoals: trainingGoals,
+  //       trainingPlanName: trainingPlanName,
+  //       trainingFrequency: trainingFrequency,
+  //       sessionDuration: sessionDuration,
+  //       trainingStartDate: trainingStartDate,
+  //       trainingEndDate: trainingEndDate,
+  //       paidAmount: paidAmount,
+  //       dueAmount: dueAmount,
+  //       discount: discount,
+  //       paymentMethod: 'online',
+  //     );
+  //
+  //     print("📦 Raw Response Body: ${response.body}");
+  //
+  //     if (response.body != null && response.body.toString().isNotEmpty) {
+  //       final decodedResponse = jsonDecode(response.body);
+  //       print("📄 Decoded Response: $decodedResponse");
+  //
+  //       if (decodedResponse['status'] == 'success') {
+  //         await getPersonalPlanList();
+  //         showCustomSnackBar(Get.context!, decodedResponse['message'] ?? "Plan Created Successfully");
+  //         Get.back();
+  //       } else {
+  //         Get.back();
+  //         showCustomSnackBar(Get.context!, decodedResponse['message'] ?? "Failed to create plan");
+  //         print("❌ Failed with response: $decodedResponse");
+  //       }
+  //     } else {
+  //       Get.back();
+  //       showCustomSnackBar(Get.context!, "Empty or invalid server response.");
+  //     }
+  //   } catch (e) {
+  //     Get.back();
+  //     showCustomSnackBar(Get.context!, "Something went wrong. Please try again.");
+  //     print("❌ Exception occurred addFoodItem: $e");
+  //   } finally {
+  //     LoadingDialog.hideLoading();
+  //     update();
+  //   }
+  // }
+
+  //
+  //
+  // Future<void> addPersonalTrainerPlan({
+  //   required String trainingGoals,
+  //   required String trainingPlanName,
+  //   required String trainingFrequency,
+  //   required String sessionDuration,
+  //   required String trainingStartDate,
+  //   required String trainingEndDate,
+  //   required String paidAmount,
+  //   required String dueAmount,
+  //   required String discount,
+  // }) async {
+  //   print('============ Fetching addPersonalTrainerPlan ============');
+  //   LoadingDialog.showLoading();
+  //
+  //
+  //
+  //   try {
+  //     // API Call
+  //     Response response = await ownerRepo.addPersonalPlanRepo(
+  //       trainingGoals: trainingGoals,
+  //       trainingPlanName: trainingPlanName,
+  //       trainingFrequency: trainingFrequency,
+  //       sessionDuration: sessionDuration,
+  //       trainingStartDate: trainingStartDate,
+  //       trainingEndDate: trainingEndDate,
+  //       paidAmount: paidAmount,
+  //       dueAmount: dueAmount,
+  //       discount: discount,
+  //       paymentMethod: 'online',
+  //     );
+  //
+  //     print("✅ Response Status Code: ${response.statusCode}");
+  //     print("📦 Raw Response Body: ${response.body}");
+  //
+  //     final decodedResponse = jsonDecode(response.body);
+  //     print("📄 Decoded Response JSON:\n$decodedResponse");
+  //
+  //     if (decodedResponse['status'] == 'success') {
+  //       await getPersonalPlanList();
+  //       showCustomSnackBar(Get.context!, decodedResponse['message'] ?? "Plan Created Successfully");
+  //       Get.back();
+  //     } else {
+  //       showCustomSnackBar(Get.context!, decodedResponse['message'] ?? "Failed to create plan");
+  //     }
+  //   } catch (e, stackTrace) {
+  //     print("❌ Exception caught during addPersonalPlanRepo call:");
+  //     print("Message: $e");
+  //     print("StackTrace: $stackTrace");
+  //     showCustomSnackBar(Get.context!, "Something went wrong. Please try again.");
+  //   } finally {
+  //     LoadingDialog.hideLoading();
+  //     update();
+  //   }
+  // }
+
+
 }
 
 

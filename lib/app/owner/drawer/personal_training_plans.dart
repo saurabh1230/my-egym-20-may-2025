@@ -79,11 +79,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myegym/app/widgets/custom_app.dart';
+import 'package:myegym/app/widgets/custom_button.dart';
 import 'package:myegym/controllers/owner_controller.dart';
 import 'package:intl/intl.dart';
+import 'package:myegym/utils/dimensions.dart';
 import 'package:myegym/utils/sizeboxes.dart';
 
 import '../../../data/repo/owner_repo.dart';
+import '../../widgets/create_personal_plan_bottomsheet.dart';
 
 class PersonalTrainingPlans extends StatelessWidget {
   const PersonalTrainingPlans({super.key});
@@ -129,210 +132,199 @@ class PersonalTrainingPlans extends StatelessWidget {
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ));
           }
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            itemCount: data.length,
-            itemBuilder: (context, index) {
-              final plan = data[index];
-              final status = plan['status'] ?? 0;
-              final statusDetails = statusInfo(status);
+          return Stack(
+            children: [
+              Container(height: Get.size.height,
+                child: ListView.builder(
 
-              return Card(
-                margin: const EdgeInsets.only(bottom: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                elevation: 6,
-                shadowColor: Colors.grey.withOpacity(0.3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header with plan name & status
-                    Container(
-                      decoration: BoxDecoration(
-                        color: statusDetails['color'].withOpacity(0.15),
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              plan['training_plan'] ?? "N/A",
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: statusDetails['color'],
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              statusDetails['text'],
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    Padding(
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14),
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(left: 16, right: 16,top: 12,bottom: 100,),
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    final plan = data[index];
+                    final status = plan['status'] ?? 0;
+                    final statusDetails = statusInfo(status);
+                
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      elevation: 6,
+                      shadowColor: Colors.grey.withOpacity(0.3),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (plan['goals'] != null) ...[
-                            Row(
+                          // Header with plan name & status
+                          Container(
+                            decoration: BoxDecoration(
+                              color: statusDetails['color'].withOpacity(0.15),
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Icon(Icons.flag, size: 20, color: Colors.deepPurple),
-                                const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    "Goal: ${plan['goals']['name']}",
+                                    plan['training_plan'] ?? "N/A",
                                     style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
                                     ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
+
                               ],
                             ),
-
-                          ],
-                          sizedBox10(),
-                          Row(
-                            children: [
-                              const Icon(Icons.repeat, size: 20, color: Colors.teal),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Frequency: ${plan['training_frequency'] ?? 'N/A'}",
-                                style: const TextStyle(fontSize: 15),
-                              ),
-                            ],
                           ),
-                          sizedBox10(),
-                          Row(
-                            children: [
-                              const Icon(Icons.timer, size: 20, color: Colors.orange),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Duration: ${plan['session_duration']} hr",
-                                style: const TextStyle(fontSize: 15),
-                              ),
-                            ],
-                          ),
-                         sizedBox10(),
-                          Row(
-                            children: [
-                              const Icon(Icons.calendar_today, size: 20, color: Colors.blue),
-                              const SizedBox(width: 8),
-                              Text(
-                                "From: ${formatDate(plan['training_start_date'] ?? '')}",
-                                style: const TextStyle(fontSize: 15),
-                              ),
-
-                            ],
-                          ),
-                          sizedBox10(),
-
-                          Row(
-                            children: [
-                              const Icon(Icons.calendar_today, size: 20, color: Colors.blue),
-                              const SizedBox(width: 8),
-                              Text(
-                                "To: ${formatDate(plan['training_end_date'] ?? '')}",
-                                style: const TextStyle(fontSize: 15),
-                              ),
-                            ],
-                          ),
-                          const Divider(height: 30, thickness: 1.2),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Paid Amount",
-                                    style: TextStyle(
-                                        fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w500),
+                
+                          Padding(
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (plan['goals'] != null) ...[
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.flag, size: 20, color: Colors.deepPurple),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          "Goal: ${plan['goals']['name']}",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    "₹${plan['paid_amount'] ?? '0.00'}",
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green),
-                                  ),
+                
                                 ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Due Amount",
-                                    style: TextStyle(
-                                        fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w500),
-                                  ),
-                                  Text(
-                                    "₹${plan['due_amount'] ?? '0.00'}",
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.redAccent),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Discount",
-                                    style: TextStyle(
-                                        fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w500),
-                                  ),
-                                  Text(
-                                    "₹${plan['discount'] ?? '0.00'}",
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.deepPurple),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                sizedBox10(),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.repeat, size: 20, color: Colors.teal),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Frequency: ${plan['training_frequency'] ?? 'N/A'}",
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                                sizedBox10(),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.timer, size: 20, color: Colors.orange),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Duration: ${plan['session_duration']} hr",
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                               sizedBox10(),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.calendar_today, size: 20, color: Colors.blue),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "From: ${formatDate(plan['training_start_date'] ?? '')}",
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                
+                                  ],
+                                ),
+                                sizedBox10(),
+                
+                                Row(
+                                  children: [
+                                    const Icon(Icons.calendar_today, size: 20, color: Colors.blue),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "To: ${formatDate(plan['training_end_date'] ?? '')}",
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(height: 30, thickness: 1.2),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Paid Amount",
+                                          style: TextStyle(
+                                              fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          "₹${plan['paid_amount'] ?? '0.00'}",
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green),
+                                        ),
+                                      ],
+                                    ),
+
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Discount",
+                                          style: TextStyle(
+                                              fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          "₹${plan['discount'] ?? '0.00'}",
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.deepPurple),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.payment, size: 18, color: Colors.blueGrey),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      "Payment Method: ${plan['payment_method'] ?? 'N/A'}",
+                                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              const Icon(Icons.payment, size: 18, color: Colors.blueGrey),
-                              const SizedBox(width: 6),
-                              Text(
-                                "Payment Method: ${plan['payment_method'] ?? 'N/A'}",
-                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
 
                         ],
                       ),
-                    )
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+              Positioned(
+                bottom: Dimensions.paddingSizeDefault,
+                  left:Dimensions.paddingSizeDefault,
+                  right: Dimensions.paddingSizeDefault,
+                  child: CustomButtonWidget(buttonText: "+ Add",onPressed: () {
+                    Get.bottomSheet(
+                      CreatePersonalPlanBottomSheet(),
+                    );
+
+                  },))
+            ],
           );
         },
       ),

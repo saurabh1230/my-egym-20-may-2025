@@ -107,4 +107,39 @@ class OwnerRepo {
     return await apiClient.getData(AppConstants.personalTrainingPlanListingUrl, method: "GET");
   }
 
+
+
+  Future<Response> addPersonalPlanRepo({
+    required String trainingGoals,
+    required String trainingPlanName,
+    required String trainingFrequency,
+    required String sessionDuration,
+    required String trainingStartDate,
+    required String trainingEndDate,
+    required String paidAmount,
+    required String dueAmount,
+    required String discount,
+    required String paymentMethod,
+  }) {
+    return apiClient.getData(
+        AppConstants.addPersonalTrainerPlanUrl,
+        body:  {
+          'training_goals': trainingGoals,
+          'training_plan': trainingPlanName,
+          'training_frequency': trainingFrequency,
+          'session_duration': sessionDuration,
+          'training_start_date': trainingStartDate,
+          'training_end_date': trainingEndDate,
+          'paid_amount': paidAmount,
+          'due_amount': dueAmount,
+          'discount': dueAmount,
+          'payment_method': paymentMethod
+        }
+    );
+  }
+
+  Future<Response> getPlanDuration() async {
+    return await apiClient.getData(AppConstants.packageDurationUrl, method: "GET");
+  }
+
 }

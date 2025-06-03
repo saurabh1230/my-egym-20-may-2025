@@ -9,7 +9,6 @@ import 'helper/gi_dart.dart' as di;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
-
   await di.init();
   runApp(const MyApp());
 }
