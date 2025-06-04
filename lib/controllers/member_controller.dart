@@ -103,7 +103,7 @@ class MemberController extends GetxController {
   Map<String, dynamic>? get memberDetails => _memberDetails;
 
   Future<void> getMemberDetails({required String id}) async {
-    print('Fetching Owner Dashboard Details ================>');
+    print('Fetching Owner Dashboard Details ================> $id');
     LoadingDialog.showLoading();
 
     try {

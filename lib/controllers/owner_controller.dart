@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:myegym/app/widgets/custom_snackbar.dart';
 import 'package:myegym/app/widgets/loading_dialog.dart';
 import 'package:myegym/controllers/auth_controller.dart';
+import 'package:myegym/controllers/member_controller.dart';
 import 'package:myegym/controllers/plans_controller.dart';
 import 'package:myegym/data/models/trainer_details_model.dart';
 import 'package:myegym/data/models/trainer_model.dart';
@@ -232,7 +233,7 @@ class OwnerController extends GetxController {
           print("🎯 First getActivityList info: $firstItem");
 
           selectedActivity.value = firstItem;
-          _selectedActivityId = firstItem["id"];
+          _personalPlan = firstItem["id"];
         }
 
         print("🎯 getActivityList List Length: ${data.length}");
@@ -692,8 +693,8 @@ class OwnerController extends GetxController {
 
           print("🎯 First data _personalPlan: $firstItem");
 
-          // selectedActivity.value = firstItem;
-          // _selectedActivityId = firstItem["id"];
+          selectedPersonalPlan.value = firstItem;
+          _selectedPersonalPlanId = firstItem["id"];
         }
 
         print("🎯 _personalPlan List Length: ${data.length}");
@@ -939,121 +940,6 @@ class OwnerController extends GetxController {
     }
   }
 
-  //
-  // Future<void> addPersonalTrainerPlan({
-  //   required String trainingGoals,
-  //   required String trainingPlanName,
-  //   required String trainingFrequency,
-  //   required String sessionDuration,
-  //   required String trainingStartDate,
-  //   required String trainingEndDate,
-  //   required String paidAmount,
-  //   required String dueAmount,
-  //   required String discount,
-  // }) async {
-  //   print('add addPersonalTrainerPlan ================>');
-  //   LoadingDialog.showLoading();
-  //
-  //   try {
-  //     Response response = await ownerRepo.addPersonalPlanRepo(
-  //       trainingGoals: trainingGoals,
-  //       trainingPlanName: trainingPlanName,
-  //       trainingFrequency: trainingFrequency,
-  //       sessionDuration: sessionDuration,
-  //       trainingStartDate: trainingStartDate,
-  //       trainingEndDate: trainingEndDate,
-  //       paidAmount: paidAmount,
-  //       dueAmount: dueAmount,
-  //       discount: discount,
-  //       paymentMethod: 'online',
-  //     );
-  //
-  //     print("📦 Raw Response Body: ${response.body}");
-  //
-  //     if (response.body != null && response.body.toString().isNotEmpty) {
-  //       final decodedResponse = jsonDecode(response.body);
-  //       print("📄 Decoded Response: $decodedResponse");
-  //
-  //       if (decodedResponse['status'] == 'success') {
-  //         await getPersonalPlanList();
-  //         showCustomSnackBar(Get.context!, decodedResponse['message'] ?? "Plan Created Successfully");
-  //         Get.back();
-  //       } else {
-  //         Get.back();
-  //         showCustomSnackBar(Get.context!, decodedResponse['message'] ?? "Failed to create plan");
-  //         print("❌ Failed with response: $decodedResponse");
-  //       }
-  //     } else {
-  //       Get.back();
-  //       showCustomSnackBar(Get.context!, "Empty or invalid server response.");
-  //     }
-  //   } catch (e) {
-  //     Get.back();
-  //     showCustomSnackBar(Get.context!, "Something went wrong. Please try again.");
-  //     print("❌ Exception occurred addFoodItem: $e");
-  //   } finally {
-  //     LoadingDialog.hideLoading();
-  //     update();
-  //   }
-  // }
-
-  //
-  //
-  // Future<void> addPersonalTrainerPlan({
-  //   required String trainingGoals,
-  //   required String trainingPlanName,
-  //   required String trainingFrequency,
-  //   required String sessionDuration,
-  //   required String trainingStartDate,
-  //   required String trainingEndDate,
-  //   required String paidAmount,
-  //   required String dueAmount,
-  //   required String discount,
-  // }) async {
-  //   print('============ Fetching addPersonalTrainerPlan ============');
-  //   LoadingDialog.showLoading();
-  //
-  //
-  //
-  //   try {
-  //     // API Call
-  //     Response response = await ownerRepo.addPersonalPlanRepo(
-  //       trainingGoals: trainingGoals,
-  //       trainingPlanName: trainingPlanName,
-  //       trainingFrequency: trainingFrequency,
-  //       sessionDuration: sessionDuration,
-  //       trainingStartDate: trainingStartDate,
-  //       trainingEndDate: trainingEndDate,
-  //       paidAmount: paidAmount,
-  //       dueAmount: dueAmount,
-  //       discount: discount,
-  //       paymentMethod: 'online',
-  //     );
-  //
-  //     print("✅ Response Status Code: ${response.statusCode}");
-  //     print("📦 Raw Response Body: ${response.body}");
-  //
-  //     final decodedResponse = jsonDecode(response.body);
-  //     print("📄 Decoded Response JSON:\n$decodedResponse");
-  //
-  //     if (decodedResponse['status'] == 'success') {
-  //       await getPersonalPlanList();
-  //       showCustomSnackBar(Get.context!, decodedResponse['message'] ?? "Plan Created Successfully");
-  //       Get.back();
-  //     } else {
-  //       showCustomSnackBar(Get.context!, decodedResponse['message'] ?? "Failed to create plan");
-  //     }
-  //   } catch (e, stackTrace) {
-  //     print("❌ Exception caught during addPersonalPlanRepo call:");
-  //     print("Message: $e");
-  //     print("StackTrace: $stackTrace");
-  //     showCustomSnackBar(Get.context!, "Something went wrong. Please try again.");
-  //   } finally {
-  //     LoadingDialog.hideLoading();
-  //     update();
-  //   }
-  // }
-
   Future<void> addPackageDuration({required String name}) async {
     print('➡️ Calling addPackageDuration...');
     LoadingDialog.showLoading();
@@ -1068,6 +954,7 @@ class OwnerController extends GetxController {
         final body = response.body;
         if (body != null && body['status'] == 'success') {
           showCustomSnackBar(Get.context!, body['message'] ?? 'Package added!');
+          await getPlanDurationList();
           Get.back();
         } else {
           showCustomSnackBar(Get.context!, 'Unexpected response.', isError: true);
@@ -1083,6 +970,315 @@ class OwnerController extends GetxController {
       update();
     }
   }
+
+
+  Future<void> deletePackageDuration({required String id}) async {
+    print('➡️ Calling deletePackageDuration...');
+    LoadingDialog.showLoading();
+    update();
+
+    try {
+      Response response = await ownerRepo.deletePackageDuration(id: id);
+      print("📥 Response Body: ${response.body}");
+      print("📡 Status Code: ${response.statusCode}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final body = response.body;
+        if (body != null && body['status'] == 'success') {
+          showCustomSnackBar(Get.context!, body['message'] ?? 'Package Deleted Successfully');
+          await getPlanDurationList();
+          Get.back();
+        } else {
+
+        }
+      } else {
+        print('Failed with code ${response.statusCode}');
+      }
+    } catch (e) {
+      print("🔥 Exception occurred: $e");
+      showCustomSnackBar(Get.context!, 'Network error occurred', isError: true);
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
+
+
+  Future<void> assignPersonalTraining({
+    required String memberId,
+    required String trainerId,
+    required String planId,
+    required String workoutId,
+  }) async {
+    LoadingDialog.showLoading();
+    update();
+    var url = Uri.parse('${AppConstants.baseUrl}${AppConstants.personalTrainingAssignUrl}');
+
+    var headers = {
+      'Content-Type': 'application/json', // Optional for Multipart, but kept for consistency
+      'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken().toString()}',
+    };
+
+    var request = http.MultipartRequest('POST', url);
+    request.fields.addAll({
+      'member_id': memberId,
+      'trainer_id': trainerId,
+      'plan_id': planId,
+      'workout_id': workoutId,
+    });
+
+    request.headers.addAll(headers);
+
+    // 🔍 Print fields as JSON for debugging
+    print('📤 Sending JSON body: ${jsonEncode(request.fields)}');
+
+    try {
+      http.StreamedResponse response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decoded = json.decode(responseBody);
+        if (decoded['status'] == 'success') {
+          showCustomSnackBar(Get.context!, 'Assigned Successfully');
+          Get.find<MemberController>().getMemberList();
+          Get.back();
+          print('✅ Success: ${decoded['message']}');
+          print('📦 Data: ${decoded['data']}');
+        } else {
+          print('❌ API Error: ${decoded['message']}');
+        }
+      } else {
+        print('❌ HTTP Error: ${response.statusCode}');
+        print(responseBody);
+      }
+    } catch (e) {
+      print('❌ Exception: $e');
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
+
+
+
+  Future<void> assignWorkoutPlan({
+    required String memberId,
+    required String packageId,
+    required String startDate,
+    required String endDate,
+    required String paidAmount,
+    required String dueAmount,
+    required String discount,
+    required String admissionFees,
+    required String paymentMethod,
+    required String workoutId,
+  }) async {
+    LoadingDialog.showLoading();
+    update();
+    final uri = Uri.parse('${AppConstants.baseUrl}${AppConstants.assignWorkoutPlan}');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken().toString()}',
+
+    };
+
+    final request = http.MultipartRequest('POST', uri);
+    request.fields.addAll({
+      'member_id': memberId,
+      'package_id': packageId,
+      'workoutplan_start_date': startDate, // format: '09/03/2025'
+      'workoutplan_end_date': endDate,
+      'paid_amount': paidAmount,
+      'due_amount': dueAmount,
+      'discount': discount,
+      'admission_fees': admissionFees,
+      'payment_method': "online",
+      'workout_id': workoutId,
+    });
+    request.headers.addAll(headers);
+
+    try {
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decoded = jsonDecode(responseBody);
+        if (decoded['status'] == 'success') {
+          Get.back();
+          Get.back();
+          print("✅ Success: ${decoded['message']}");
+        } else {
+          LoadingDialog.hideLoading();
+          update();
+          print("⚠️ Failed: ${decoded['message']}");
+        }
+      } else {
+        LoadingDialog.hideLoading();
+        update();
+        print("❌ Server Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      LoadingDialog.hideLoading();
+      update();
+      print("❗ Exception: $e");
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
+  Rx<dynamic> selectedOffer = Rx<dynamic>({});
+  // final Rx<TrainerModel?> selectedTrainer = Rx<TrainerModel?>(null);
+  int _selectedOfferID = 0;
+
+
+  int get selectedOfferID => _selectedOfferID;
+
+  void selectOfferId(int val) {
+    _selectedOfferID = val;
+    update();
+  }
+
+  List<dynamic>? _offerListing;
+  List<dynamic>? get offerListing => _offerListing;
+
+  Future<void> getOffersApi() async {
+    try {
+      LoadingDialog.showLoading();
+      update();
+
+      print("🔥 Calling getOffersApi API...");
+      Response response = await ownerRepo.getOffersListing();
+
+      print("📥 Full response: ${response.bodyString}");
+      print("📡 Status code: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        var responseData = response.body;
+        List<dynamic> data = responseData["NewsOffer"];
+
+        if (data.isNotEmpty) {
+          var firstItem = data[0];
+          print("🎯 First getOffersApi info: $firstItem");
+
+          selectedOffer.value = firstItem;
+          _selectedOfferID = firstItem["id"]; // Store the ID if needed
+        }
+
+        print("🎯 getOffersApi List Length: ${data.length}");
+        _offerListing = data; // ✅ Assigning the whole list here
+      } else {
+        print("❌ Non-200 response");
+        var responseData = response.body;
+        showCustomSnackBar(
+          Get.context!,
+          responseData["message"] ?? 'Error fetching getOffersApi',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      print("🚨 Exception: $e");
+      showCustomSnackBar(Get.context!, 'Something went wrong: $e', isError: true);
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
+
+
+  Future<dynamic> addOffersApi({
+    required String title,
+    required String description,
+    required XFile? photo,
+
+    bool? isAddedByTrainer = false,
+  }) async {
+    final SharedPreferences sharedPreferences =
+    await SharedPreferences.getInstance();
+    String? token = sharedPreferences.getString(AppConstants.token);
+    LoadingDialog.showLoading();
+    update();
+
+    if (token == null || token.isEmpty) {
+      print('Token is null or empty');
+      LoadingDialog.hideLoading();
+      update();
+      return false;
+    }
+
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    };
+
+    var request = http.MultipartRequest(
+      'POST', // Ensure PATCH method is what your API requires
+      Uri.parse('${AppConstants.baseUrl}${AppConstants.addOfferUrl}'),
+    );
+
+    request.fields.addAll({
+      'title': title,
+      'description': description
+    });
+
+
+
+    if (photo != null && photo.path.isNotEmpty) {
+      var mimeType = photo.path.split('.').last; // e.g., jpg, png
+      request.files.add(await http.MultipartFile.fromPath(
+        'photo',
+        photo.path,
+        contentType: MediaType('image', mimeType), // Set the correct MIME type
+      ));
+    }
+
+    request.headers.addAll(headers);
+
+    try {
+      http.StreamedResponse response = await request.send();
+      print('Request URL: ${request.url}');
+      print('Request Method: ${request.method}');
+      print('Request Headers: ${request.headers}');
+      print('Request Fields: ${request.fields}');
+      print('Request Files: ${request.files}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var responseBody = await response.stream.bytesToString();
+        print('Response Body: $responseBody');
+        await getOffersApi(); // <-- First update the data
+
+        Get.back();
+        update();
+        // Get.to(DashboardScreen(pageIndex: 0));
+
+        return jsonDecode(responseBody);
+      } else {
+        var responseBody = await response.stream.bytesToString();
+        print('Error: ${response.reasonPhrase}');
+        print('Response Body: $responseBody');
+        await getOffersApi(); // <-- First update the data
+
+        Get.back();
+        update();
+        return false;
+      }
+    } catch (e) {
+      print('Exception: $e');
+      await getOffersApi(); // <-- First update the data
+
+      Get.back();
+      update();
+      return false;
+    } finally {
+      // Get.find<AuthController>().profileDetailsApi();
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
 
 
 }

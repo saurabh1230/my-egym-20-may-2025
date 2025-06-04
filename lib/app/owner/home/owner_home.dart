@@ -7,16 +7,22 @@ import 'package:myegym/app/trainer/home/components/take_charge_component.dart';
 import 'package:myegym/app/widgets/custom_app.dart';
 import 'package:myegym/app/widgets/custom_containers.dart';
 import 'package:myegym/controllers/owner_controller.dart';
+import 'package:myegym/controllers/trainer_controllers.dart';
 import 'package:myegym/data/repo/owner_repo.dart';
 import 'package:myegym/utils/dimensions.dart';
 import 'package:myegym/utils/styles.dart';
 import 'package:get/get.dart';
+
+import '../../../data/repo/trainer_repo.dart';
 
 class OwnerHome extends StatelessWidget {
   OwnerHome({super.key});
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+
+    Get.lazyPut(() => TrainerRepo(apiClient: Get.find()));
+    Get.lazyPut(() => TrainerController(trainerRepo: Get.find()));
     Get.lazyPut(() => OwnerRepo(apiClient: Get.find()));
     Get.lazyPut(() => OwnerController(ownerRepo: Get.find()));
 

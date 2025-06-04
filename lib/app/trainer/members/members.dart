@@ -90,7 +90,7 @@ class MemberScreen extends StatelessWidget {
                             return Column(
                               children: [
                                 TrainerCard(
-                                  personImg: member['photo'] ??
+                                  personImg: member['image_url'] ??
                                       'default_image_url', // Fallback if 'photo' is null
                                   idNo: member['trainee_id'] ??
                                       'N/A', // Fallback if 'trainee_id' is null
@@ -120,12 +120,17 @@ class MemberScreen extends StatelessWidget {
                                       },
                                     ));
                                   },
-                                  detailsTap: () {},
+                                  detailsTap: () {
+                                    Get.to(() => MemberDetailsScreen(id: member['id'].toString(), name: member['full_name'], userId: member['user_id'].toString() ,
+
+                                    isFromOwner: true,));
+                                  },
                                   edit: () {
                                     Get.to(() => EditMemberScreen(memberList: member,));
                                   },
                                   personalTrainerTap: () {
-                                    Get.to(() => AddPersonalTrainer(memberID: member['id'].toString(),));
+                                    Get.to(() => AddPersonalTrainer(memberID: member['user_id'].toString(), memberName: member['full_name'] ??
+                                        'No Name',));
                                   },
                                 )
                               ],

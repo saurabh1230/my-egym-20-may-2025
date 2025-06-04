@@ -73,6 +73,17 @@ class PlansController extends GetxController {
     }
   }
 
+  Rx<dynamic> selectedWorkoutPlan = Rx<dynamic>({});
+  // final Rx<TrainerModel?> selectedTrainer = Rx<TrainerModel?>(null);
+  int _selectedWorkoutPlanId = 0;
+
+
+  int get selectedWorkoutPlanId => _selectedWorkoutPlanId;
+
+  void selectWorkoutPlanId(int val) {
+    _selectedWorkoutPlanId = val;
+    update();
+  }
   List<dynamic>? _workoutListing;
   List<dynamic>? get workoutListing => _workoutListing;
 
@@ -92,10 +103,15 @@ class PlansController extends GetxController {
 
         if (responseData["success"] == true) {
           print("✅ API returned success");
-
-          // Directly access 'data' as a List<dynamic>
           List<dynamic> data = responseData["workouts"];
+          if (data.isNotEmpty) {
+            var firstItem = data[0];
 
+            print("🎯 First data _personalPlan: $firstItem");
+
+            selectedWorkoutPlan.value = firstItem;
+            _selectedWorkoutPlanId = firstItem["id"];
+          }
           print("🎯 getWorkoutListing List Length: ${data.length}");
           _workoutListing = data; // Store the entire trainer list
         } else {

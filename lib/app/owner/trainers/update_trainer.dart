@@ -28,6 +28,7 @@ class UpdateTrainer extends StatefulWidget {
 
 class _UpdateTrainerState extends State<UpdateTrainer> {
 
+
   late final Map<String, dynamic> trainerData;
    TextEditingController trainerNameController = TextEditingController();
 
@@ -63,27 +64,80 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
 
   final formKey = GlobalKey<FormState>();
 
+
   @override
   void initState() {
+    print('widget.data ====== > ${widget.data}');
+    print('widget.fullname ====== > ${widget.data!['full_name']}');
     super.initState();
 
-    trainerData = widget.isTrainerProfile == true
-        ? widget.data ?? {}
-        : widget.data?['data']?['trainer'] ?? {};
-
-    trainerNameController.text = trainerData['full_name']?.toString() ?? '';
+  if(widget.isTrainerProfile == true) {
+    print('DATA :${widget.data!['full_name']}');
+    trainerNameController.text = widget.data!['full_name'];
     dobController.text = DateConverter.formatDateDMYString(
-      inputDate: trainerData['date_of_birth']?.toString() ?? '',
+      inputDate: widget.data!['date_of_birth']?.toString() ?? '',
       inputFormat: 'yyyy-MM-dd',
       outputFormat: 'dd/MM/yyyy',
     );
-    phoneController.text = trainerData['phone_number']?.toString() ?? '';
-    emailController.text = trainerData['email']?.toString() ?? '';
-    addressController.text = trainerData['address']?.toString() ?? '';
-    yearsOfExperience.text = trainerData['experienceinyear']?.toString() ?? '';
-    joiningDateController.text = trainerData['created_at']?.toString() ?? '';
-    instaController.text = trainerData['instaProfileLink']?.toString() ?? '';
-    facebookController.text = trainerData['facebookProfileLink']?.toString() ?? '';
+    phoneController.text = widget.data!['phone_number']?.toString() ?? '';
+    emailController.text = widget.data!['email']?.toString() ?? '';
+    addressController.text = widget.data!['address']?.toString() ?? '';
+    yearsOfExperience.text = widget.data!['experienceinyear']?.toString() ?? '';
+    joiningDateController.text = widget.data!['created_at']?.toString() ?? '';
+    instaController.text = widget.data!['instaProfileLink']?.toString() ?? '';
+    facebookController.text = widget.data!['facebookProfileLink']?.toString() ?? '';
+
+
+  } else {
+    print('DATA :${widget.data!['full_name']}');
+    trainerNameController.text = widget.data!['full_name'];
+    dobController.text = DateConverter.formatDateDMYString(
+      inputDate: widget.data!['date_of_birth']?.toString() ?? '',
+      inputFormat: 'yyyy-MM-dd',
+      outputFormat: 'dd/MM/yyyy',
+    );
+    phoneController.text = widget.data!['phone_number']?.toString() ?? '';
+    emailController.text = widget.data!['email']?.toString() ?? '';
+    addressController.text = widget.data!['address']?.toString() ?? '';
+    yearsOfExperience.text = widget.data!['experienceinyear']?.toString() ?? '';
+    joiningDateController.text = widget.data!['created_at']?.toString() ?? '';
+    instaController.text = widget.data!['instaProfileLink']?.toString() ?? '';
+    facebookController.text = widget.data!['facebookProfileLink']?.toString() ?? '';
+
+    // print('CHECK DATA : ${widget.data?['data']?['trainer']['full_name']?.toString() ?? ''}');
+    // trainerNameController.text = widget.data?['data']?['trainer']['full_name']?.toString() ?? '';
+    // dobController.text = DateConverter.formatDateDMYString(
+    //   inputDate: widget.data?['data']?['trainer']['date_of_birth']?.toString() ?? '',
+    //   inputFormat: 'yyyy-MM-dd',
+    //   outputFormat: 'dd/MM/yyyy',
+    // );
+    // phoneController.text = widget.data?['data']?['trainer']['phone_number']?.toString() ?? '';
+    // emailController.text = widget.data?['data']?['trainer']['email']?.toString() ?? '';
+    // addressController.text = widget.data?['data']?['trainer']['address']?.toString() ?? '';
+    // yearsOfExperience.text = widget.data?['data']?['trainer']['experienceinyear']?.toString() ?? '';
+    // joiningDateController.text = widget.data?['data']?['trainer']['created_at']?.toString() ?? '';
+    // instaController.text = widget.data?['data']?['trainer']['instaProfileLink']?.toString() ?? '';
+    // facebookController.text = widget.data?['data']?['trainer']['facebookProfileLink']?.toString() ?? '';
+
+  }
+
+  //   trainerData = widget.isTrainerProfile == true
+  //       ? widget.data ?? {}
+  //       : widget.data?['data']?['trainer'] ?? {};
+  // print('CHECK DATA : ${trainerData['full_name']?.toString() ?? ''}');
+  //   trainerNameController.text = trainerData['full_name']?.toString() ?? '';
+  //   dobController.text = DateConverter.formatDateDMYString(
+  //     inputDate: trainerData['date_of_birth']?.toString() ?? '',
+  //     inputFormat: 'yyyy-MM-dd',
+  //     outputFormat: 'dd/MM/yyyy',
+  //   );
+  //   phoneController.text = trainerData['phone_number']?.toString() ?? '';
+  //   emailController.text = trainerData['email']?.toString() ?? '';
+  //   addressController.text = trainerData['address']?.toString() ?? '';
+  //   yearsOfExperience.text = trainerData['experienceinyear']?.toString() ?? '';
+  //   joiningDateController.text = trainerData['created_at']?.toString() ?? '';
+  //   instaController.text = trainerData['instaProfileLink']?.toString() ?? '';
+  //   facebookController.text = trainerData['facebookProfileLink']?.toString() ?? '';
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.find<DataController>().getQualificationList();
@@ -91,62 +145,11 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
     });
   }
 
-
-  // @override
-  // void initState() {
-  //   if(widget.isTrainerProfile == true) {
-  //     final trainer = widget.data ?? {};
-  //     trainerNameController.text = trainer['full_name']?.toString() ?? '';
-  //     dobController.text = DateConverter.formatDateDMYString(
-  //       inputDate: trainer['date_of_birth']?.toString() ?? '',
-  //       inputFormat: 'yyyy-MM-dd',
-  //       outputFormat: 'dd/MM/yyyy', // ← use slashes here
-  //     );
-  //     phoneController.text = trainer['phone_number']?.toString() ?? '';
-  //     emailController.text = trainer['email']?.toString() ?? '';
-  //     addressController.text = trainer['address']?.toString() ?? '';
-  //     yearsOfExperience.text = trainer['experienceinyear']?.toString() ?? '';
-  //     joiningDateController.text = trainer['created_at']?.toString() ?? '';
-  //     instaController.text = trainer['instaProfileLink']?.toString() ?? '';
-  //     facebookController.text = trainer['facebookProfileLink']?.toString() ?? '';
-  //
-  //   } else {
-  //     final trainer = widget.data?['data']?['trainer'] ?? {};
-  //     trainerNameController.text = trainer['full_name']?.toString() ?? '';
-  //     dobController.text = DateConverter.formatDateDMYString(
-  //       inputDate: trainer['date_of_birth']?.toString() ?? '',
-  //       inputFormat: 'yyyy-MM-dd',
-  //       outputFormat: 'dd/MM/yyyy', // ← use slashes here
-  //     );
-  //     phoneController.text = trainer['phone_number']?.toString() ?? '';
-  //     emailController.text = trainer['email']?.toString() ?? '';
-  //     addressController.text = trainer['address']?.toString() ?? '';
-  //     yearsOfExperience.text = trainer['experienceinyear']?.toString() ?? '';
-  //     joiningDateController.text = trainer['created_at']?.toString() ?? '';
-  //     instaController.text = trainer['instaProfileLink']?.toString() ?? '';
-  //     facebookController.text = trainer['facebookProfileLink']?.toString() ?? '';
-  //
-  //   }
-  //
-  //
-  //
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     Get.find<DataController>().getQualificationList();
-  //     Get.find<DataController>().getSpecializationList();
-  //   });
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     Get.put(DataRepo(apiClient: Get.find()));
     Get.put(DataController(dataRepo: Get.find()));
     Get.put(HelperController());
-
-
-
-
-
 
 
     return Scaffold(
@@ -388,16 +391,10 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
                 password: confirmPasswordController.text,
                 trainerId: trainerData['user_id'].toString()
             );
-
-
             }
-
                           },),
-
                         ],
                       ),
-
-
                     ],
                   ),
                 ),

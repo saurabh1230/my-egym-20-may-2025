@@ -14,6 +14,7 @@ import 'package:myegym/utils/styles.dart';
 
 import '../../../utils/theme/light_theme.dart';
 import '../../widgets/create_plan_bottomsheet.dart';
+import 'diet_plan_details.dart';
 
 class OwnerDietPlan extends StatelessWidget {
   const OwnerDietPlan({super.key});
@@ -55,54 +56,39 @@ class OwnerDietPlan extends StatelessWidget {
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: list.length,
                             itemBuilder: (_,i) {
-                          return Column(
-                            children: [
-                              Stack(
-                                children: [
-                                  Column( crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      CustomNetworkImageWidget(image: list[i]['image_url'].toString()),
-                                      sizedBox10(),
-                                      Text(list[i]['plan_name'].toString(),style: notoSansSemiBold.copyWith(
-                                        color: Colors.white
-                                      ),maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,)
-                                    ],
-                                  ),
-                                  Positioned(
-                                    bottom: Dimensions.paddingSize40,
-                                    right: Dimensions.paddingSizeDefault,
-                                    child: ElevatedButton(style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all<Color>(primaryRedColor), // your desired color
+                              final plan = list[i];
+                          return GestureDetector(
+                            onTap: () {
+                              Get.to(() => PlanDetailsScreen(planData: plan));
+                            },
+                            child: Column(
+                              children: [
+                                Stack(
+                                  children: [
+                                    Column( crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CustomNetworkImageWidget(image: list[i]['image_url'].toString()),
+                                        sizedBox10(),
+                                        Text(list[i]['plan_name'].toString(),style: notoSansSemiBold.copyWith(
+                                          color: Colors.white
+                                        ),maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,)
+                                      ],
                                     ),
-                                        onPressed: () {}, child: Text("Edit")),
-                                  )
-
-                                ],
-                              )
-                            ],
+                                    Positioned(
+                                      bottom: Dimensions.paddingSize40,
+                                      right: Dimensions.paddingSizeDefault,
+                                      child: ElevatedButton(style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<Color>(primaryRedColor), // your desired color
+                                      ),
+                                          onPressed: () {}, child: Text("Edit")),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
                           );
                         }, separatorBuilder: (BuildContext context, int index) => sizedBoxDefault(),)
-                        // DietPlanComponent(
-                        //   title: "Gain Weight Plans",
-                        //   lenght: 3,
-                        //   img: 'assets/images/ic_workout_demo.png',
-                        // ),
-                        // DietPlanComponent(
-                        //   title: "Gain Weight Plans",
-                        //   lenght: 3,
-                        //   img: 'assets/images/ic_workout_demo.png',
-                        // ),
-                        // DietPlanComponent(
-                        //   title: "Gain Weight Plans",
-                        //   lenght: 3,
-                        //   img: 'assets/images/ic_workout_demo.png',
-                        // ),
-                        // DietPlanComponent(
-                        //   title: "Gain Weight Plans",
-                        //   lenght: 3,
-                        //   img: 'assets/images/ic_workout_demo.png',
-                        // ),
                       ],
                     ),
                   ),

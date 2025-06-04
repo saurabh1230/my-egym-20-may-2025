@@ -7,6 +7,7 @@ import 'package:myegym/controllers/trainer_controllers.dart';
 import 'package:myegym/data/models/trainer_details_model.dart';
 import 'package:myegym/data/models/trainer_model.dart';
 import 'package:myegym/utils/dimensions.dart';
+import 'package:myegym/utils/sizeboxes.dart';
 import 'package:myegym/utils/styles.dart';
 
 class MemberCardListWithView extends StatelessWidget {
@@ -19,19 +20,21 @@ class MemberCardListWithView extends StatelessWidget {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
-              width: 160,
+              width: 120,
               child: Text(
                 "Member Name",
                 style: notoSansRegular.copyWith(
                     fontSize: Dimensions.fontSize14, color: Colors.red),
               ),
             ),
+            sizedBoxW10(),
             Flexible(
               child: Text(
-                "Plan End",
+                "Ph No",
+                // "Plan End",
                 style: notoSansRegular.copyWith(
                     fontSize: Dimensions.fontSize14, color: Colors.red),
               ),
@@ -63,7 +66,7 @@ class MemberCardListWithView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(
-                  width: 160,
+                  width: 100,
                   child: Text(
                     member['full_name'] ??
                         'Member Name', // Access data from the map
@@ -75,7 +78,7 @@ class MemberCardListWithView extends StatelessWidget {
                 ),
                 Flexible(
                   child: Text(
-                    member['membership_end_date'] ?? 'N/A',
+                    member['phone_number'] ?? 'N/A',
                     style: notoSansRegular.copyWith(
                         fontSize: Dimensions.fontSize14, color: Colors.black),
                   ),

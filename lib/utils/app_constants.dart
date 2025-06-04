@@ -33,6 +33,11 @@ class AppConstants {
   static const String personalTrainingPlanListingUrl = 'personal-training';
   static const String packageDurationUrl = 'package';
   static const String packageDurationStoreUrl = 'package/store';
+  static const String packageDurationDeleteUrl = 'package/delete';
+  static const String personalTrainingAssignUrl = 'personal-training/assign/store';
+  static const String assignWorkoutPlan = 'workoutplan/store';
+  static const String getOffersUrl = 'news-offer';
+static const String addOfferUrl = 'news-offer/store';
   // Shared Key
   static const String theme = 'theme';
   static const String intro = 'intro';

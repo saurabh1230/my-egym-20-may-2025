@@ -156,4 +156,38 @@ class OwnerRepo {
   }
 
 
+  Future<Response> deletePackageDuration({
+    required String id,
+
+  }) {
+    return apiClient.getData(
+        "${AppConstants.packageDurationDeleteUrl}/$id",
+      method: "DELETE"
+
+    );
+  }
+
+
+  Future<Response> assignPersonalPlanRepo({
+    required String memberId,
+    required String trainerId,
+    required String planId,
+    required String workoutId,
+
+  }) {
+    return apiClient.getData(
+        AppConstants.personalTrainingAssignUrl,
+        body:  {
+          'member_id': memberId,
+          'trainer_id': trainerId,
+          'plan_id': planId,
+          'workout_id': workoutId
+        }
+    );
+  }
+
+  Future<Response> getOffersListing() async {
+    return await apiClient.getData(AppConstants.getOffersUrl, method: "GET");
+  }
+
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myegym/app/widgets/confirmation_dialog.dart';
 import 'package:myegym/app/widgets/custom_app.dart';
 import 'package:myegym/app/widgets/custom_button.dart';
 import 'package:myegym/app/widgets/custom_containers.dart';
@@ -26,14 +27,13 @@ class PackageDuration extends StatelessWidget {
     });
 
     return Scaffold(
-      appBar: CustomAppBar(title: "Packages", isBackButtonExist: true),
+      appBar: CustomAppBar(title: "Packages Duration", isBackButtonExist: true),
       body: GetBuilder<OwnerController>(builder: (controller) {
         final data = controller.planDurationList;
 
         if (data == null) {
           return const Center(child: CircularProgressIndicator());
         }
-
         if (data.isEmpty) {
           return const Center(child: Text("No Packages Available"));
         }
@@ -70,7 +70,8 @@ class PackageDuration extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 package['name'] ?? '',
                                 style: notoSansRegular.copyWith(
-                                  color: Colors.white
+                                  color: Colors.white,
+                                  fontSize: Dimensions.fontSize12
                                 ),
                               ),
                             ],
@@ -78,12 +79,63 @@ class PackageDuration extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
+                            Get.dialog(ConfirmationDialog(
+                                icon: Icons.delete,
+                                description: "Are You Sure to Delete this Package Duration",
+                                onYesPressed: () {
+                                  controller.deletePackageDuration(id: package['id'].toString());
+
+
+                                })
+                            );
 
                           },
-                          child: Text("Update",style: notoSansRegular.copyWith(
-                              color: Colors.white
-                          ),),
-                        )
+                          child: CustomDecoratedContainer(
+                            horizontalPadding: 10,
+                            verticlePadding: 6,
+                            color: Theme.of(context).primaryColor,
+                            child: Text("Delete",style: notoSansRegular.copyWith(
+                                fontSize: Dimensions.fontSize12,
+                                color: Colors.white
+                            ),
+                            ),
+                          ),
+                        ),
+                        // Row(
+                        //   children: [
+                        //     GestureDetector(
+                        //       onTap: () {
+                        //
+                        //       },
+                        //       child: CustomDecoratedContainer(
+                        //         horizontalPadding: 10,
+                        //         verticlePadding: 6,
+                        //         color: Theme.of(context).primaryColor,
+                        //         child: Text("Delete",style: notoSansRegular.copyWith(
+                        //           fontSize: Dimensions.fontSize12,
+                        //             color: Colors.white
+                        //         ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     sizedBoxW10(),
+                        //     GestureDetector(
+                        //       onTap: () {
+                        //
+                        //       },
+                        //       child: CustomDecoratedContainer(
+                        //         horizontalPadding: 10,
+                        //         verticlePadding: 6,
+                        //         color: Theme.of(context).primaryColor,
+                        //         child: Text("Update",style: notoSansRegular.copyWith(
+                        //             fontSize: Dimensions.fontSize12,
+                        //             color: Colors.white
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
 
                       ],
                     ),

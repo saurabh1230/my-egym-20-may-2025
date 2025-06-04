@@ -21,31 +21,36 @@ import 'package:myegym/utils/date_converter.dart';
 import 'package:myegym/utils/dimensions.dart';
 import 'package:myegym/utils/sizeboxes.dart';
 import '../../../../utils/styles.dart';
+import '../../../helper/validations.dart';
 
-class AddPersonalTrainer extends StatelessWidget {
+class AssignWorkoutPlan extends StatelessWidget {
   final String memberID;
   final String memberName;
-  AddPersonalTrainer({super.key, required this.memberID, required this.memberName});
+  AssignWorkoutPlan({super.key, required this.memberID, required this.memberName});
 
-
-
+  final paidAmountController  = TextEditingController();
+  final discountController  = TextEditingController();
+  final dueAmountController  = TextEditingController();
+  final admissionFessController  = TextEditingController();
+  final TextEditingController startingDateController = TextEditingController();
+  final TextEditingController endingDateController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     Get.put(HelperController());
     Get.put(TrainerRepo(apiClient: Get.find()));
-   final trainerC =  Get.put(TrainerController(trainerRepo: Get.find()));
+    final trainerC =  Get.put(TrainerController(trainerRepo: Get.find()));
     Get.put(OwnerRepo(apiClient: Get.find()));
-   final ownerC = Get.put(OwnerController(ownerRepo: Get.find()));
+    final ownerC = Get.put(OwnerController(ownerRepo: Get.find()));
     Get.put(PlanRepo(apiClient: Get.find()));
-   final planC = Get.put(PlansController(planRepo: Get.find()));
+    final planC = Get.put(PlansController(planRepo: Get.find()));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       trainerC.getTrainerList();
       ownerC.getPersonalPlanList();
       planC.getWorkoutListing();
-
+      ownerC.getPlanDurationList();
 
     });
 
@@ -71,65 +76,18 @@ class AddPersonalTrainer extends StatelessWidget {
                               child: SingleChildScrollView(
                                 child: Column(
                                   children: [
-                                    Text('Assing Trainer To ${memberName}',
-                                    style: notoSansSemiBold.copyWith(
-                                      fontSize: Dimensions.fontSize14,
-                                      color: Theme.of(context).primaryColor
-                                    ),),
-
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Trainers',
-                                          style: TextStyle(
-                                              fontSize: 12.0,
-                                              color: const Color.fromRGBO(
-                                                  117, 117, 117, 1)),
-                                        ),
-                                        Obx(() => DropdownButtonFormField<
-                                            Map<String, dynamic>>(
-                                          // Use Map<String, dynamic> instead of TrainerModel
-                                          decoration: const InputDecoration(
-                                            border: UnderlineInputBorder(),
-                                          ),
-                                          value: trainerControl.selectedTrainer
-                                              .value.isNotEmpty
-                                              ? trainerControl
-                                              .selectedTrainer.value
-                                              : null, // Ensure it's a valid Map<String, dynamic> or null
-                                          items:
-                                          (trainerControl.trainerList ?? [])
-                                              .map((trainerData) {
-                                            return DropdownMenuItem<
-                                                Map<String, dynamic>>(
-                                              // Use Map<String, dynamic> as value type
-                                              value: trainerData[
-                                              "trainer"], // Assign the 'trainer' map to the value
-                                              child: Text(trainerData["trainer"]
-                                              ?["full_name"] ??
-                                                  "Unknown"),
-                                            );
-                                          }).toList(),
-                                          onChanged: (newValue) {
-                                            trainerControl.selectedTrainer.value =
-                                                newValue ??
-                                                    {}; // Store raw data directly
-                                            trainerControl.selectTrainerId(newValue?[
-                                            "user_id"]); // Access data directly as map
-
-                                            print(
-                                                trainerControl.selectedTrainerId);
-                                          },
-                                        ))
-                                      ],
-                                    ),
+                                    Text('Assing Workout Plan To ${memberName}',
+                                      style: notoSansSemiBold.copyWith(
+                                          fontSize: Dimensions.fontSize14,
+                                          color: Theme.of(context).primaryColor
+                                      ),),
                                     sizedBoxDefault(),
+
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Personal Training Plans',
+                                          'Plan Duration',
                                           style: TextStyle(
                                               fontSize: 12.0,
                                               color:
@@ -141,35 +99,107 @@ class AddPersonalTrainer extends StatelessWidget {
                                                 border: UnderlineInputBorder(),
                                               ),
                                               value: ownerControl
-                                                  .selectedPersonalPlan.value.isNotEmpty
-                                                  ? ownerControl.selectedPersonalPlan.value
+                                                  .selectedPlanDuration.value.isNotEmpty
+                                                  ? ownerControl.selectedPlanDuration.value
                                                   : null, // Ensure it's a valid Map<String, dynamic> or null
-                                              items: (ownerControl.personalPlan ?? [])
+                                              items: (ownerControl.planDurationList ?? [])
                                                   .map((trainerData) {
-                                                return DropdownMenuItem<Map<String, dynamic>>(
+                                                return DropdownMenuItem<
+                                                    Map<String, dynamic>>(
+                                                  // Use Map<String, dynamic> as value type
                                                   value:
-                                                  trainerData,
+                                                  trainerData, // Assign the 'trainer' map to the value
                                                   child: Text(
-                                                      trainerData?["training_plan"] ?? "Unknown"),
+                                                      trainerData?["name"] ?? "Unknown"),
                                                 );
                                               }).toList(),
                                               onChanged: (newValue) {
-                                                ownerControl.selectedPersonalPlan.value =
+                                                ownerControl.selectedPlanDuration.value =
                                                     newValue ??
                                                         {}; // Store raw data directly
-                                                ownerControl.selectPersonalPlanId(newValue?[
+                                                ownerControl.selectPlanDurationId(newValue?[
                                                 "id"]); // Access data directly as map
 
-                                                print(ownerControl.selectedPersonalPlanId);
+                                                print(ownerControl.selectedPlanDurationID);
                                               },
                                               validator: (value) {
                                                 if (value == null || value.isEmpty) {
-                                                  return 'Please select Personal Training Plan';
+                                                  return 'Please select an Plan Duration Goal';
                                                 }
                                                 return null;
                                               },
                                             ))
                                       ],
+                                    ),
+
+                                    sizedBoxDefault(),
+                                    sizedBoxDefault(),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: UnderlineTextfield(
+                                            readOnly: true,
+                                            onTap: () async {
+                                              await helperControl
+                                                  .selectStartDateDateFunction(context);
+                                              startingDateController.text = DateConverter.formatDateToYMD(helperControl.selectedStartDate);
+                                            },
+                                            label: 'Starting Date',
+                                            hint: 'Starting Date',
+                                            controller: startingDateController,
+                                            showSuffixIcon: false,
+                                            validation: helperControl.validateDate,
+                                          ),
+                                        ),
+                                        SizedBox(width: 16.0),
+                                        Expanded(
+                                          child: UnderlineTextfield(
+                                            readOnly: true,
+                                            onTap: () async {
+                                              await helperControl
+                                                  .selectEndDDateFunction(context);
+                                              endingDateController.text = DateConverter.formatDateToYMD(helperControl.selectedEndDate);
+                                            },
+                                            label: 'Ending Date',
+                                            hint: 'Ending Date',
+                                            controller: endingDateController,
+                                            showSuffixIcon: false,
+                                            validation: helperControl.validateDate,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    sizedBoxDefault(),
+                                    UnderlineTextfield(
+                                      keyboardType: TextInputType.number,
+                                      controller: paidAmountController,
+                                      label: 'Paid Amount',
+                                      hint: 'Paid Amount',
+                                      validation: Validators.validate,
+                                    ),
+                                    sizedBoxDefault(),
+                                    UnderlineTextfield(
+                                      keyboardType: TextInputType.number,
+                                      controller: dueAmountController,
+                                      label: 'Due Amount',
+                                      hint: 'Due Amount',
+                                      validation: Validators.validate,
+                                    ),
+                                    sizedBoxDefault(),
+                                    UnderlineTextfield(
+                                      keyboardType: TextInputType.number,
+                                      controller: discountController,
+                                      label: 'Discount Amount',
+                                      hint: 'Discount Amount',
+                                      validation: Validators.validate,
+                                    ),
+                                    sizedBoxDefault(),
+                                    UnderlineTextfield(
+                                      keyboardType: TextInputType.number,
+                                      controller: admissionFessController,
+                                      label: 'Admission Fees',
+                                      hint: 'Admission Fees',
+                                      validation: Validators.validate,
                                     ),
                                     sizedBoxDefault(),
                                     Column(
@@ -220,6 +250,7 @@ class AddPersonalTrainer extends StatelessWidget {
                                       ],
                                     ),
 
+
                                   ],
                                 ),
                               ),
@@ -230,10 +261,17 @@ class AddPersonalTrainer extends StatelessWidget {
                               right:  0,
                               child: CustomButtonWidget(buttonText: "Assing Personal Training",
                                 onPressed: () {
-                                ownerControl.assignPersonalTraining(memberId: memberID,
-                                    trainerId:  trainerControl.selectedTrainerId.toString(),
-                                    planId: ownerControl.selectedPersonalPlanId.toString(),
-                                    workoutId: planControl.selectedWorkoutPlanId.toString());
+                                  ownerControl.assignWorkoutPlan(
+                                      memberId: memberID,
+                                      packageId: ownerControl.selectedPlanDurationID.toString(),
+                                      startDate: startingDateController.text.trim(),
+                                      endDate: endingDateController.text.trim(),
+                                      paidAmount: paidAmountController.text.trim(),
+                                      dueAmount:  dueAmountController.text.trim(),
+                                      discount: discountController.text.trim(),
+                                      admissionFees: admissionFessController.text.trim(),
+                                      paymentMethod: 'online',
+                                      workoutId: planControl.selectedWorkoutPlanId.toString());
 
                                 },),
                             )

@@ -16,6 +16,7 @@ import 'package:get/get.dart';
 
 import '../../widgets/add_workout_goal_dialog.dart';
 import '../widgets/add_food_dialog.dart';
+import 'offers.dart';
 
 class OwnerDrawer extends StatelessWidget {
   const OwnerDrawer({super.key});
@@ -44,11 +45,11 @@ class OwnerDrawer extends StatelessWidget {
                     )
                   ],
                 ),
-                text(
-                    title: 'My Purchases',
-                    tap: () {
-                      Get.to(() => OwnerMyPurchases());
-                    }),
+                // text(
+                //     title: 'My Purchases',
+                //     tap: () {
+                //       Get.to(() => OwnerMyPurchases());
+                //     }),
                 sizedBox5(),
                 Divider(),
                 text(
@@ -82,11 +83,19 @@ class OwnerDrawer extends StatelessWidget {
                 sizedBox5(),
                 Divider(),
                 text(
-                    title: 'Diet Plans',
+                    title: 'Diets',
                     tap: () {
                       Get.to(() => OwnerDietPlan());
                     }),
-                sizedBox5(),
+                Divider(),
+                text(
+                    title: 'Diet Plans',
+                    tap: () {
+                      // Get.to(() => OwnerDietPlan());
+                    }),
+
+
+
                 Divider(),
                 text(
                     title: 'Meal Plans',
@@ -122,7 +131,9 @@ class OwnerDrawer extends StatelessWidget {
                 text(title: 'Gym Staff', tap: () {}),
                 sizedBox5(),
                 Divider(),
-                text(title: 'Add offers', tap: () {}),
+                text(title: 'Offers', tap: () {
+                Get.to(() => Offers());
+                }),
                 sizedBox5(),
                 Divider(),
                 text(title: 'Add News', tap: () {}),

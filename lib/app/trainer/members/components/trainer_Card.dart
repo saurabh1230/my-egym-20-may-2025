@@ -105,18 +105,7 @@ class TrainerCard extends StatelessWidget {
                     ))
               ],
             ),
-            isTrainer! ?
-                SizedBox() :
-            TextButton(
-                onPressed: personalTrainerTap,
-                child: Text(
-                  "Assign Personal Trainer",
-                  style: notoSansSemiBold.copyWith(
-                    fontSize: Dimensions.fontSize14,
-                    color: Colors.red,
-                    decoration: TextDecoration.underline, // Add this line
-                  ),
-                ))
+
           ],
         ));
   }

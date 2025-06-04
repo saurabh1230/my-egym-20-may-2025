@@ -20,7 +20,9 @@ class CustomDecoratedContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding:
+
+      EdgeInsets.symmetric(
           horizontal: horizontalPadding ?? Dimensions.paddingSizeDefault,
           vertical: verticlePadding ?? Dimensions.paddingSizeDefault),
       decoration: BoxDecoration(
