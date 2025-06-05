@@ -209,7 +209,6 @@ class OwnerController extends GetxController {
 
   List<dynamic>? _activityList;
   List<dynamic>? get activityList => _activityList;
-
   Future<void> getActivityList() async {
     try {
       LoadingDialog.showLoading();
@@ -224,8 +223,8 @@ class OwnerController extends GetxController {
       if (response.statusCode == 200) {
         var responseData = response.body;
 
-        // Directly access 'data' as a List<dynamic>
-        List<dynamic> data = responseData["activities"];
+        // Ensure 'activities' is a List
+        List<dynamic> data = responseData["activities"] ?? [];
 
         if (data.isNotEmpty) {
           var firstItem = data[0];
@@ -233,29 +232,75 @@ class OwnerController extends GetxController {
           print("🎯 First getActivityList info: $firstItem");
 
           selectedActivity.value = firstItem;
-          _personalPlan = firstItem["id"];
+          _selectedActivityId = firstItem["id"]; // ✅ store only the ID here
         }
 
         print("🎯 getActivityList List Length: ${data.length}");
-        _activityList = data; // Store the entire trainer list
+        _activityList = data; // ✅ store entire activity list
       } else {
         print("❌ Non-200 response");
         var responseData = response.body;
         showCustomSnackBar(
           Get.context!,
-          responseData["message"] ?? 'Error fetching trainer list',
+          responseData["message"] ?? 'Error fetching activity list',
           isError: true,
         );
       }
     } catch (e) {
       print("🚨 Exception: $e");
-      showCustomSnackBar(Get.context!, 'Something went wrong: $e',
-          isError: true);
+      showCustomSnackBar(Get.context!, 'Something went wrong: $e', isError: true);
     } finally {
       LoadingDialog.hideLoading();
       update();
     }
   }
+
+  // Future<void> getActivityList() async {
+  //   try {
+  //     LoadingDialog.showLoading();
+  //     update();
+  //
+  //     print("🔥 Calling getActivityList API...");
+  //     Response response = await ownerRepo.getWorkoutActivityRepo();
+  //
+  //     print("📥 Full response getActivityList: ${response.bodyString}");
+  //     print("📡 Status code getActivityList: ${response.statusCode}");
+  //
+  //     if (response.statusCode == 200) {
+  //       var responseData = response.body;
+  //
+  //       // Directly access 'data' as a List<dynamic>
+  //       List<dynamic> data = responseData["activities"];
+  //
+  //       if (data.isNotEmpty) {
+  //         var firstItem = data[0];
+  //
+  //         print("🎯 First getActivityList info: $firstItem");
+  //
+  //         selectedActivity.value = firstItem;
+  //         _personalPlan = firstItem["id"];
+  //       }
+  //
+  //       print("🎯 getActivityList List Length: ${data.length}");
+  //       _activityList = data; // Store the entire trainer list
+  //     } else {
+  //       print("❌ Non-200 response");
+  //       var responseData = response.body;
+  //       showCustomSnackBar(
+  //         Get.context!,
+  //         responseData["message"] ?? 'Error fetching trainer list',
+  //         isError: true,
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print("🚨 Exception: $e");
+  //     showCustomSnackBar(Get.context!, 'Something went wrong: $e',
+  //         isError: true);
+  //   } finally {
+  //     LoadingDialog.hideLoading();
+  //     update();
+  //   }
+  // }
 
 
 
@@ -275,13 +320,13 @@ class OwnerController extends GetxController {
   List<dynamic>? _subActivityList;
   List<dynamic>? get subActivityList => _subActivityList;
 
-  Future<void> getSubActivityList() async {
+  Future<void> getSubActivityList({required String activityID}) async {
     try {
       LoadingDialog.showLoading();
       update();
 
       print("🔥 Calling getSubActivityList API...");
-      Response response = await ownerRepo.getWorkoutSubActivityRepo();
+      Response response = await ownerRepo.getWorkoutSubActivityRepo(activityID);
 
       print("📥 Full response getSubActivityList: ${response.bodyString}");
       print("📡 Status code getSubActivityList: ${response.statusCode}");
@@ -1003,8 +1048,6 @@ class OwnerController extends GetxController {
     }
   }
 
-
-
   Future<void> assignPersonalTraining({
     required String memberId,
     required String trainerId,
@@ -1013,11 +1056,12 @@ class OwnerController extends GetxController {
   }) async {
     LoadingDialog.showLoading();
     update();
+
     var url = Uri.parse('${AppConstants.baseUrl}${AppConstants.personalTrainingAssignUrl}');
 
     var headers = {
-      'Content-Type': 'application/json', // Optional for Multipart, but kept for consistency
-      'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken().toString()}',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken()}',
     };
 
     var request = http.MultipartRequest('POST', url);
@@ -1029,16 +1073,14 @@ class OwnerController extends GetxController {
     });
 
     request.headers.addAll(headers);
-
-    // 🔍 Print fields as JSON for debugging
     print('📤 Sending JSON body: ${jsonEncode(request.fields)}');
 
     try {
       http.StreamedResponse response = await request.send();
       final responseBody = await response.stream.bytesToString();
+      final decoded = json.decode(responseBody);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final decoded = json.decode(responseBody);
         if (decoded['status'] == 'success') {
           showCustomSnackBar(Get.context!, 'Assigned Successfully');
           Get.find<MemberController>().getMemberList();
@@ -1046,20 +1088,86 @@ class OwnerController extends GetxController {
           print('✅ Success: ${decoded['message']}');
           print('📦 Data: ${decoded['data']}');
         } else {
+          // Handle logical API error even on 200
+          showCustomSnackBar(Get.context!, decoded['message'] ?? 'Something went wrong');
           print('❌ API Error: ${decoded['message']}');
         }
       } else {
+        // ❗ Show error message for other HTTP status codes
+        showCustomSnackBar(Get.context!, decoded['message'] ?? 'Failed with status ${response.statusCode}');
         print('❌ HTTP Error: ${response.statusCode}');
         print(responseBody);
       }
     } catch (e) {
       print('❌ Exception: $e');
+      showCustomSnackBar(Get.context!, 'Something went wrong. Please try again.');
     } finally {
       LoadingDialog.hideLoading();
       update();
     }
   }
 
+
+  Future<void> assignPersonalTrainingUpdate({
+    required String id,
+    required String memberId,
+    required String trainerId,
+    required String planId,
+    required String workoutId,
+  }) async {
+    LoadingDialog.showLoading();
+    update();
+
+    var url = Uri.parse('${AppConstants.baseUrl}${AppConstants.personalTrainingUpdateUrl}/$id');
+    print('Url:  ${AppConstants.baseUrl}${AppConstants.personalTrainingUpdateUrl}/$id');
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken()}',
+    };
+
+    var request = http.MultipartRequest('POST', url);
+    request.fields.addAll({
+
+      'member_id': memberId,
+      'trainer_id': trainerId,
+      'plan_id': planId,
+      'workout_id': workoutId,
+    });
+
+    request.headers.addAll(headers);
+    print('📤 Sending JSON body: ${jsonEncode(request.fields)}');
+
+    try {
+      http.StreamedResponse response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+      final decoded = json.decode(responseBody);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (decoded['status'] == 'success') {
+          showCustomSnackBar(Get.context!, 'Assigned Successfully');
+          Get.find<MemberController>().getMemberList();
+          Get.back();
+          print('✅ Success: ${decoded['message']}');
+          print('📦 Data: ${decoded['data']}');
+        } else {
+          // Handle logical API error even on 200
+          showCustomSnackBar(Get.context!, decoded['message'] ?? 'Something went wrong');
+          print('❌ API Error: ${decoded['message']}');
+        }
+      } else {
+        // ❗ Show error message for other HTTP status codes
+        showCustomSnackBar(Get.context!, decoded['message'] ?? 'Failed with status ${response.statusCode}');
+        print('❌ HTTP Error: ${response.statusCode}');
+        print(responseBody);
+      }
+    } catch (e) {
+      print('❌ Exception: $e');
+      showCustomSnackBar(Get.context!, 'Something went wrong. Please try again.');
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
 
 
 
@@ -1077,57 +1185,71 @@ class OwnerController extends GetxController {
   }) async {
     LoadingDialog.showLoading();
     update();
+
     final uri = Uri.parse('${AppConstants.baseUrl}${AppConstants.assignWorkoutPlan}');
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken().toString()}',
-
+      'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken()}',
     };
 
     final request = http.MultipartRequest('POST', uri);
     request.fields.addAll({
       'member_id': memberId,
       'package_id': packageId,
-      'workoutplan_start_date': startDate, // format: '09/03/2025'
+      'workoutplan_start_date': startDate,
       'workoutplan_end_date': endDate,
       'paid_amount': paidAmount,
       'due_amount': dueAmount,
       'discount': discount,
       'admission_fees': admissionFees,
-      'payment_method': "online",
+      'payment_method': paymentMethod,
       'workout_id': workoutId,
     });
+
     request.headers.addAll(headers);
+
+    print('📤 Sending workout assignment request: ${jsonEncode(request.fields)}');
 
     try {
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
 
+      print('📥 Response Status Code: ${response.statusCode}');
+      print('📥 Response Body: $responseBody');
+
+      Map<String, dynamic> decoded = {};
+      try {
+        decoded = jsonDecode(responseBody);
+      } catch (e) {
+        print('❗ JSON Decode Error: $e');
+      }
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final decoded = jsonDecode(responseBody);
         if (decoded['status'] == 'success') {
-          Get.back();
-          Get.back();
           print("✅ Success: ${decoded['message']}");
+          showCustomSnackBar(Get.context!, decoded['message'] ?? 'Workout plan assigned');
+          Get.back();
+          Get.back();
         } else {
-          LoadingDialog.hideLoading();
-          update();
-          print("⚠️ Failed: ${decoded['message']}");
+          print("⚠️ API Error: ${decoded['message']}");
+          showCustomSnackBar(Get.context!, decoded['message'] ?? 'Something went wrong');
         }
       } else {
-        LoadingDialog.hideLoading();
-        update();
-        print("❌ Server Error: ${response.statusCode}");
+        // ⛔ Always show error for non-success status codes
+        final errorMsg = decoded['message'] ?? 'Server Error: ${response.statusCode}';
+        print("❌ Server Error: $errorMsg");
+        showCustomSnackBar(Get.context!, errorMsg);
       }
     } catch (e) {
-      LoadingDialog.hideLoading();
-      update();
       print("❗ Exception: $e");
+      showCustomSnackBar(Get.context!, 'Something went wrong. Please try again.');
     } finally {
       LoadingDialog.hideLoading();
       update();
     }
   }
+
+
 
   Rx<dynamic> selectedOffer = Rx<dynamic>({});
   // final Rx<TrainerModel?> selectedTrainer = Rx<TrainerModel?>(null);

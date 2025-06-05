@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myegym/app/widgets/custom_app.dart';
@@ -10,8 +12,10 @@ import 'package:myegym/utils/dimensions.dart';
 import '../../../controllers/data_controller.dart';
 import '../../../data/models/qualification_model.dart';
 import '../../../data/repo/data_repo.dart';
+import '../../../utils/images.dart';
 import '../../../utils/sizeboxes.dart';
 import '../../../utils/styles.dart';
+import '../../widgets/custom_network_image.dart';
 import '../../widgets/specialization_dialog.dart';
 import '../../widgets/underline_textfield.dart';
 
@@ -70,6 +74,7 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
     print('widget.data ====== > ${widget.data}');
     print('widget.fullname ====== > ${widget.data!['full_name']}');
     super.initState();
+    trainerData = widget.data ?? {}; // ✅ Fix here
 
   if(widget.isTrainerProfile == true) {
     print('DATA :${widget.data!['full_name']}');
@@ -104,40 +109,8 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
     instaController.text = widget.data!['instaProfileLink']?.toString() ?? '';
     facebookController.text = widget.data!['facebookProfileLink']?.toString() ?? '';
 
-    // print('CHECK DATA : ${widget.data?['data']?['trainer']['full_name']?.toString() ?? ''}');
-    // trainerNameController.text = widget.data?['data']?['trainer']['full_name']?.toString() ?? '';
-    // dobController.text = DateConverter.formatDateDMYString(
-    //   inputDate: widget.data?['data']?['trainer']['date_of_birth']?.toString() ?? '',
-    //   inputFormat: 'yyyy-MM-dd',
-    //   outputFormat: 'dd/MM/yyyy',
-    // );
-    // phoneController.text = widget.data?['data']?['trainer']['phone_number']?.toString() ?? '';
-    // emailController.text = widget.data?['data']?['trainer']['email']?.toString() ?? '';
-    // addressController.text = widget.data?['data']?['trainer']['address']?.toString() ?? '';
-    // yearsOfExperience.text = widget.data?['data']?['trainer']['experienceinyear']?.toString() ?? '';
-    // joiningDateController.text = widget.data?['data']?['trainer']['created_at']?.toString() ?? '';
-    // instaController.text = widget.data?['data']?['trainer']['instaProfileLink']?.toString() ?? '';
-    // facebookController.text = widget.data?['data']?['trainer']['facebookProfileLink']?.toString() ?? '';
-
   }
 
-  //   trainerData = widget.isTrainerProfile == true
-  //       ? widget.data ?? {}
-  //       : widget.data?['data']?['trainer'] ?? {};
-  // print('CHECK DATA : ${trainerData['full_name']?.toString() ?? ''}');
-  //   trainerNameController.text = trainerData['full_name']?.toString() ?? '';
-  //   dobController.text = DateConverter.formatDateDMYString(
-  //     inputDate: trainerData['date_of_birth']?.toString() ?? '',
-  //     inputFormat: 'yyyy-MM-dd',
-  //     outputFormat: 'dd/MM/yyyy',
-  //   );
-  //   phoneController.text = trainerData['phone_number']?.toString() ?? '';
-  //   emailController.text = trainerData['email']?.toString() ?? '';
-  //   addressController.text = trainerData['address']?.toString() ?? '';
-  //   yearsOfExperience.text = trainerData['experienceinyear']?.toString() ?? '';
-  //   joiningDateController.text = trainerData['created_at']?.toString() ?? '';
-  //   instaController.text = trainerData['instaProfileLink']?.toString() ?? '';
-  //   facebookController.text = trainerData['facebookProfileLink']?.toString() ?? '';
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.find<DataController>().getQualificationList();
@@ -165,6 +138,66 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      Center(
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: 150,
+                              width: 150,
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  width: 0.5,
+                                  color: Theme.of(context).highlightColor,
+                                ),
+                                color: Theme.of(context).hintColor,
+                              ),
+                              child: helperControl.pickedImage != null
+                                  ? Image.file(
+                                File(helperControl.pickedImage!.path),
+                                height: 90,
+                                width: 90,
+                                fit: BoxFit.cover,
+                              )
+                                  : CustomNetworkRoundImageWidget(
+                                imagePadding: Dimensions.paddingSize40,
+                                height: 150,
+                                width: 150,
+                                image: '',
+                                placeholder: Images.icProfilePlaceHolder,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Positioned.fill(
+                              child: InkWell(
+                                onTap: () =>
+                                    helperControl.pickImage(isRemove: false),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.3),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        width: 1,
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                  child: Container(
+                                    margin: const EdgeInsets.all(25),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 2, color: Colors.white),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(Icons.camera_alt,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      sizedBox20(),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -371,7 +404,7 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
                           SizedBox(height: 24.0),
                           CustomButtonWidget(buttonText: "Update",onPressed: () {
             if(formKey.currentState!.validate()){
-              print('PRINT DATA : ${trainerData['user_id'].toString()}');
+
 
               trainerControl.updateTrainer(
                 fullName: trainerNameController.text,
@@ -389,7 +422,11 @@ class _UpdateTrainerState extends State<UpdateTrainer> {
                     .toString(),
                 experienceInYear: yearsOfExperience.text,
                 password: confirmPasswordController.text,
-                trainerId: trainerData['user_id'].toString()
+                trainerId: trainerData['user_id'].toString(),
+                  photoFilePath :  helperControl.pickedImage != null
+                      ? File(helperControl.pickedImage!.path)
+                      : null,
+
             );
             }
                           },),

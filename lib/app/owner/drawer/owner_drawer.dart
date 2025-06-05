@@ -87,12 +87,12 @@ class OwnerDrawer extends StatelessWidget {
                     tap: () {
                       Get.to(() => OwnerDietPlan());
                     }),
-                Divider(),
-                text(
-                    title: 'Diet Plans',
-                    tap: () {
-                      // Get.to(() => OwnerDietPlan());
-                    }),
+                // Divider(),
+                // text(
+                //     title: 'Diet Plans',
+                //     tap: () {
+                //       // Get.to(() => OwnerDietPlan());
+                //     }),
 
 
 
@@ -120,12 +120,12 @@ class OwnerDrawer extends StatelessWidget {
 
                       ));
                     }),
-                Divider(),
-                text(
-                    title: 'PT Plans',
-                    tap: () {
-                      Get.to(() => OwnerPtPlan());
-                    }),
+                // Divider(),
+                // text(
+                //     title: 'PT Plans',
+                //     tap: () {
+                //       Get.to(() => OwnerPtPlan());
+                //     }),
                 sizedBox5(),
                 Divider(),
                 text(title: 'Gym Staff', tap: () {}),

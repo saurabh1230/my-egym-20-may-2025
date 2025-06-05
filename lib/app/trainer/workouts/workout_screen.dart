@@ -124,18 +124,18 @@ class TrainerWorkoutScreen extends StatelessWidget {
                     right: Dimensions.paddingSizeDefault,
                     child: Row(
                       children: [
-                        Expanded(
-                          child: CustomButtonWidget(
-                            iconColor: Theme.of(context).primaryColor,
-                            buttonText: "Filter",
-                            fontSize: Dimensions.fontSize14,
-                            textColor: Theme.of(context).primaryColor,
-                            icon: Icons.tune,
-                            onPressed: () {},
-                            transparent: true,
-                          ),
-                        ),
-                        sizedBoxW10(),
+                        // Expanded(
+                        //   child: CustomButtonWidget(
+                        //     iconColor: Theme.of(context).primaryColor,
+                        //     buttonText: "Filter",
+                        //     fontSize: Dimensions.fontSize14,
+                        //     textColor: Theme.of(context).primaryColor,
+                        //     icon: Icons.tune,
+                        //     onPressed: () {},
+                        //     transparent: true,
+                        //   ),
+                        // ),
+                        // sizedBoxW10(),
                         Expanded(
                           child: CustomButtonWidget(
                             buttonText: "Add New Workout",

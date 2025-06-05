@@ -89,6 +89,7 @@ class MemberCardListWithView extends StatelessWidget {
                       Get.to(MemberDetailsScreen(
                         id: member['id'].toString(), // Access data from the map
                         name: member['fullName'] ?? '',
+                        userId: member['user_id'].toString(),
                       ));
                     },
                     child: Text(

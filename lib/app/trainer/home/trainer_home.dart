@@ -11,6 +11,8 @@ import 'package:myegym/app/user/home/workout.dart';
 import 'package:myegym/app/widgets/custom_app.dart';
 import 'package:myegym/app/widgets/custom_single_banner_component.dart';
 import 'package:myegym/app/widgets/gradient_bar_chart.dart';
+import 'package:myegym/controllers/trainer_controllers.dart';
+import 'package:myegym/data/repo/trainer_repo.dart';
 import 'package:myegym/utils/dimensions.dart';
 import 'package:myegym/utils/images.dart';
 import 'package:myegym/utils/styles.dart';
@@ -23,6 +25,8 @@ class TrainerHome extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => TrainerRepo(apiClient: Get.find()));
+    Get.lazyPut(() => TrainerController(trainerRepo: Get.find()));
     return Scaffold(
       key: _scaffoldKey,
       drawer: const TrainerDrawer(),

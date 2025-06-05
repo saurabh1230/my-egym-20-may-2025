@@ -25,14 +25,15 @@ import '../../../../utils/styles.dart';
 class AddPersonalTrainer extends StatelessWidget {
   final String memberID;
   final String memberName;
-  AddPersonalTrainer({super.key, required this.memberID, required this.memberName});
-
-
-
+  final bool? isUpdate;
+  final String? personalPlanId;
+  final String? trainerId;
+  final String? trainingPlanId;
+  AddPersonalTrainer({super.key, required this.memberID, required this.memberName, this.isUpdate = false,  this.personalPlanId, this.trainerId, this.trainingPlanId});
   final formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
+    print('Trainer ID :${trainerId}');
     Get.put(HelperController());
     Get.put(TrainerRepo(apiClient: Get.find()));
    final trainerC =  Get.put(TrainerController(trainerRepo: Get.find()));
@@ -46,6 +47,39 @@ class AddPersonalTrainer extends StatelessWidget {
       ownerC.getPersonalPlanList();
       planC.getWorkoutListing();
 
+      // if (isUpdate == true) {
+      //   print("👉 isUpdate mode: trainerId = $trainerId");
+      //
+      //   /// ✅ Set Trainer Dropdown
+      //   if (trainerId != null && trainerId!.isNotEmpty) {
+      //     final matchedTrainer = trainerC.trainerList?.firstWhereOrNull(
+      //           (trainer) => trainer["trainer"]["user_id"].toString() == trainerId,
+      //     );
+      //
+      //     if (matchedTrainer != null) {
+      //       print("✅ Matched Trainer: ${matchedTrainer["trainer"]["full_name"]}");
+      //       trainerC.selectedTrainer.value = matchedTrainer["trainer"];
+      //       trainerC.selectTrainerId(int.parse(matchedTrainer["trainer"]["user_id"].toString()));
+      //     } else {
+      //       print("❌ No matching trainer found for trainerId = $trainerId");
+      //     }
+      //   }
+      //
+      //   /// ✅ Set Plan Dropdown
+      //   if (trainingPlanId != null && trainingPlanId!.isNotEmpty) {
+      //     final matchedPlan = ownerC.personalPlan?.firstWhereOrNull(
+      //           (plan) => plan["id"].toString() == trainingPlanId,
+      //     );
+      //
+      //     if (matchedPlan != null) {
+      //       print("✅ Matched Plan: ${matchedPlan["plan_name"] ?? matchedPlan["name"]}");
+      //       ownerC.selectedPersonalPlan.value = matchedPlan;
+      //       ownerC.selectPersonalPlanId(int.parse(matchedPlan["id"].toString()));
+      //     } else {
+      //       print("❌ No matching plan found for trainingPlanId = $trainingPlanId");
+      //     }
+      //   }
+      // }
 
     });
 
@@ -55,7 +89,7 @@ class AddPersonalTrainer extends StatelessWidget {
         child: Scaffold(
             backgroundColor: Colors.white,
             appBar: CustomAppBar(
-              title: "Assign Personal Trainer",
+              title: isUpdate!  ? "Update Personal Trainer" : "Assign Personal Trainer",
               isLogo: false,
               isBackButtonExist: true,
             ),
@@ -97,15 +131,14 @@ class AddPersonalTrainer extends StatelessWidget {
                                               .value.isNotEmpty
                                               ? trainerControl
                                               .selectedTrainer.value
-                                              : null, // Ensure it's a valid Map<String, dynamic> or null
+                                              : null,
                                           items:
                                           (trainerControl.trainerList ?? [])
                                               .map((trainerData) {
                                             return DropdownMenuItem<
                                                 Map<String, dynamic>>(
-                                              // Use Map<String, dynamic> as value type
                                               value: trainerData[
-                                              "trainer"], // Assign the 'trainer' map to the value
+                                              "trainer"],
                                               child: Text(trainerData["trainer"]
                                               ?["full_name"] ??
                                                   "Unknown"),
@@ -172,6 +205,7 @@ class AddPersonalTrainer extends StatelessWidget {
                                       ],
                                     ),
                                     sizedBoxDefault(),
+                                    planControl.addWorkoutBool ?
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -209,15 +243,26 @@ class AddPersonalTrainer extends StatelessWidget {
 
                                                 print(planControl.selectedWorkoutPlanId);
                                               },
-                                              validator: (value) {
-                                                if (value == null || value.isEmpty) {
-                                                  return 'Please select Workout Plan';
-                                                }
-                                                return null;
-                                              },
+                                              // validator: (value) {
+                                              //   if (value == null || value.isEmpty) {
+                                              //     return 'Please select Workout Plan';
+                                              //   }
+                                              //   return null;
+                                              // },
                                             ))
 
                                       ],
+                                    ) : SizedBox(),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor)
+                                        ),
+                                          onPressed: () {
+                                            planControl.selectAddWorkout(!planControl.addWorkoutBool);
+
+                                          }, child: Text(planControl.addWorkoutBool  ? "Remove Workout Plan" : "Add Workout Plan")),
                                     ),
 
                                   ],
@@ -228,13 +273,26 @@ class AddPersonalTrainer extends StatelessWidget {
                               bottom: Dimensions.paddingSizeDefault,
                               left: 0,
                               right:  0,
-                              child: CustomButtonWidget(buttonText: "Assing Personal Training",
+                              child: CustomButtonWidget(buttonText:  isUpdate! ?
+                                  "Update Personal Training" :
+                              "Assing Personal Training",
                                 onPressed: () {
-                                ownerControl.assignPersonalTraining(memberId: memberID,
+                                if(isUpdate == true) {
+                                  print('check this');
+                                  ownerControl.assignPersonalTrainingUpdate(memberId: memberID,
                                     trainerId:  trainerControl.selectedTrainerId.toString(),
                                     planId: ownerControl.selectedPersonalPlanId.toString(),
-                                    workoutId: planControl.selectedWorkoutPlanId.toString());
-
+                                    workoutId:  planControl.addWorkoutBool ?
+                                    planControl.selectedWorkoutPlanId.toString() : "",
+                                      id: personalPlanId.toString());
+                                } else{
+                                  ownerControl.assignPersonalTraining(memberId: memberID,
+                                      trainerId:  trainerControl.selectedTrainerId.toString(),
+                                      planId: ownerControl.selectedPersonalPlanId.toString(),
+                                      workoutId:  planControl.addWorkoutBool ?
+                                      planControl.selectedWorkoutPlanId.toString() : ""
+                                  );
+                                }
                                 },),
                             )
 

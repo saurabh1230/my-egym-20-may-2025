@@ -245,6 +245,7 @@ class PlansController extends GetxController {
       if (data['success'] == true) {
         LoadingDialog.hideLoading();
         showCustomSnackBar(Get.context!, "Meal Plan Added Successfully");
+        Get.back();
       } else {
         // Optional: Parse and display errors
         String errorMsg = "Something went wrong";
@@ -267,6 +268,14 @@ class PlansController extends GetxController {
       update();
       print('🏁 API Call Finished');
     }
+  }
+
+  bool _addWorkoutBool = false;
+  bool get addWorkoutBool => _addWorkoutBool;
+
+  void selectAddWorkout(bool val) {
+    _addWorkoutBool = val;
+    update();
   }
 
 

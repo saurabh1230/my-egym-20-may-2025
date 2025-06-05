@@ -12,6 +12,8 @@ import 'package:myegym/utils/sizeboxes.dart';
 import 'package:myegym/utils/styles.dart';
 import 'package:get/get.dart';
 
+import '../../owner/drawer/package_duration.dart';
+import '../../owner/drawer/personal_training_plans.dart';
 import '../../owner/widgets/add_food_dialog.dart';
 import '../../widgets/add_workout_goal_dialog.dart';
 
@@ -79,12 +81,19 @@ class TrainerDrawer extends StatelessWidget {
                     }),
 
                 sizedBox5(),
+
                 Divider(),
                 text(
-                    title: 'Diet Plans',
+                    title: 'Diets',
                     tap: () {
                       Get.to(() => OwnerDietPlan());
                     }),
+                // Divider(),
+                // text(
+                //     title: 'Diet Plans',
+                //     tap: () {
+                //       Get.to(() => OwnerDietPlan());
+                //     }),
                 sizedBox5(),
                 Divider(),
                 text(
@@ -92,6 +101,22 @@ class TrainerDrawer extends StatelessWidget {
                     tap: () {
                       Get.to(() => MealPlanScreen());
                     }),
+                // Divider(),
+                // text(
+                //     title: 'Personal Training Plans',
+                //     tap: () {
+                //       Get.to(() => PersonalTrainingPlans(
+                //
+                //       ));
+                //     }),
+                // Divider(),
+                // text(
+                //     title: 'Package Duration',
+                //     tap: () {
+                //       Get.to(() => PackageDuration(
+                //
+                //       ));
+                //     }),
                 // sizedBox5(),
                 // Divider(),
                 // text(

@@ -46,17 +46,20 @@ class TrainerCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Column(
-                  children: [
-                    CustomNetworkRoundImageWidget(
-                        height: 80, width: 80, image: personImg),
-                    sizedBox10(),
-                    Text(
-                      "ID: $idNo",
-                      style: notoSansBold.copyWith(
-                          fontSize: Dimensions.fontSize12, color: Colors.black),
-                    )
-                  ],
+                SizedBox(width: 100,
+                  child: Column(
+                    children: [
+                      CustomNetworkRoundImageWidget(
+                          height: 80, width: 80, image: personImg),
+                      sizedBox10(),
+                      Text(maxLines: 2,
+                        textAlign: TextAlign.center,
+                        "ID: $idNo",
+                        style: notoSansBold.copyWith(
+                            fontSize: Dimensions.fontSize12, color: Colors.black),
+                      )
+                    ],
+                  ),
                 ),
                 sizedBoxW10(),
                 Flexible(

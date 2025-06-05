@@ -71,7 +71,7 @@ class TrainerProfile extends StatelessWidget {
                               CustomNetworkRoundImageWidget(
                                   height: 80,
                                   width: 80,
-                                  image: detailsData['photo'] ?? ""),
+                                  image: detailsData['image_url'] ?? ""),
                               // Image.asset(
                               //   "assets/icons/ic_profile_demo.png",
                               //   height: 80,

@@ -74,7 +74,7 @@ class Offers extends StatelessWidget {
                 left: 0,right: 0,
                 child: CustomButtonWidget(buttonText: "+ Add Offer",
                 onPressed: () {
-                  Get.dialog(ConfirmationDialog(title: 'Add Offers',));
+                  Get.dialog(AddOfferDialog(title: 'Add Offers',));
 
                 },),
               )

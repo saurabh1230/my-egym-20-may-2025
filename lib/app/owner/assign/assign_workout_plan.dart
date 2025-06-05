@@ -60,7 +60,7 @@ class AssignWorkoutPlan extends StatelessWidget {
         child: Scaffold(
             backgroundColor: Colors.white,
             appBar: CustomAppBar(
-              title: "Assign Personal Trainer",
+              title: "Assign Workout Plan",
               isLogo: false,
               isBackButtonExist: true,
             ),

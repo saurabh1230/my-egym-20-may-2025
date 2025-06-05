@@ -6,6 +6,7 @@ import 'package:myegym/controllers/owner_controller.dart';
 import 'package:myegym/utils/sizeboxes.dart';
 import 'package:myegym/utils/styles.dart';
 import 'package:myegym/utils/theme/light_theme.dart';
+import '../../data/repo/owner_repo.dart';
 import '../../utils/dimensions.dart';
 import 'custom_button.dart';
 
@@ -25,6 +26,8 @@ class AddWorkoutGoalDialog extends StatelessWidget {
   final TextEditingController titleController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => OwnerRepo(apiClient: Get.find()));
+    Get.lazyPut(() => OwnerController(ownerRepo: Get.find()));
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radius10)),
       insetPadding: const EdgeInsets.all(30),

@@ -97,7 +97,7 @@ class _EditProfileState extends State<EditProfile> {
                             width: 90,
                             fit: BoxFit.cover,
                           )
-                              : CustomNetworkImageWidget(
+                              : CustomNetworkRoundImageWidget(
                             imagePadding: Dimensions.paddingSize40,
                             height: 150,
                             width: 150,

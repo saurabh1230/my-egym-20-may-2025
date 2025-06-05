@@ -374,4 +374,60 @@ class MemberController extends GetxController {
     }
   }
 
+
+
+  List<dynamic>? _personalPlanMemberList;
+  List<dynamic>? get personalPlanMemberList => _personalPlanMemberList;
+
+  Future<void> personalPlanMembers() async {
+    try {
+      LoadingDialog.showLoading();
+      update();
+
+      print("🔥 Calling _personalPlanMemberList API...");
+      Response response = await memberRepo.getPersonalPlanMembers();
+
+      print("📥 Full response: ${response.bodyString}");
+      print("📡 Status code: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        var responseData = response.body;
+
+        if (responseData["status"] == "success") {
+          print("✅ API _personalPlanMemberList success");
+
+
+          List<dynamic> trainerDataList = responseData["data"];
+          // if (trainerDataList.isNotEmpty) {
+          //   var firstItem = trainerDataList[0];
+          //
+          //   print("🎯 _personalPlanMemberList info: $firstItem");
+          //
+          //   selectedMember.value = firstItem;
+          //   _selectedMemberID = firstItem["id"];
+          // }
+
+          print("🎯 _personalPlanMemberList Length: ${trainerDataList.length}");
+
+          print("🎯 _personalPlanMemberList Length: ${trainerDataList.length}");
+          _personalPlanMemberList = trainerDataList; // Store the entire trainer list
+        } else {
+          print("⚠️ Response status is not success");
+
+        }
+      } else {
+        print("❌ Non-200 response");
+        var responseData = response.body;
+
+      }
+    } catch (e) {
+      print("🚨 Exception: $e");
+
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
+
 }

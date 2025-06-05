@@ -12,6 +12,8 @@ import 'package:myegym/app/user/progress/user_progress.dart';
 import 'package:myegym/utils/images.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../members/personal_plan_members.dart';
+
 class TrainerDashboard extends StatefulWidget {
   const TrainerDashboard({super.key});
 
@@ -24,7 +26,7 @@ class _TrainerDashboardState extends State<TrainerDashboard> {
 
   final List<Widget> _widgetOptions = <Widget>[
     TrainerHome(),
-    MemberScreen(isFromTrainer: true,),
+    PersonalPlanMembers(),
     TrainerWorkoutScreen(),
     TrainerProfile(),
     // HomeScreen(),
@@ -79,9 +81,9 @@ class _TrainerDashboardState extends State<TrainerDashboard> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  CupertinoIcons.bag, // Cupertino icon
+                  Icons.fitness_center, // Cupertino icon
                 ),
-                label: 'My Plans',
+                label: 'Workouts',
               ),
               BottomNavigationBarItem(
                 icon: Icon(

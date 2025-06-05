@@ -37,7 +37,7 @@ class MealPlanScreen extends StatelessWidget {
           children: [
             SizedBox(height: Get.size.height,
               child: ListView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.only(left: 16,right: 16,bottom: 100,),
                 itemCount: mealPlans.length,
                 itemBuilder: (context, index) {
                   final meal = mealPlans[index];
@@ -105,6 +105,7 @@ class MealPlanScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
+                          sizedBox100(),
                         ],
                       ),
                     ),

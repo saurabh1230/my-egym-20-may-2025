@@ -14,6 +14,7 @@ import 'package:myegym/controllers/plans_controller.dart';
 import 'package:myegym/controllers/trainer_controllers.dart';
 
 import 'package:myegym/data/repo/member_repo.dart';
+import 'package:myegym/data/repo/owner_repo.dart';
 import 'package:myegym/data/repo/trainer_repo.dart';
 import 'package:myegym/utils/date_converter.dart';
 import 'package:myegym/utils/dimensions.dart';
@@ -56,13 +57,18 @@ class AddWorkoutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.put(MemberRepo(apiClient: Get.find()));
     Get.put(MemberController(memberRepo: Get.find()));
+    Get.put(OwnerRepo(apiClient: Get.find()));
+   final c = Get.put(OwnerController(ownerRepo: Get.find()));
+
     Get.put(TrainerRepo(apiClient: Get.find()));
     Get.put(TrainerController(trainerRepo: Get.find())); // <--- ADD THIS LINE
     Get.put(HelperController());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.find<OwnerController>().getActivityList();
-      Get.find<OwnerController>().getSubActivityList();
-  Get.find<OwnerController>().getWorkoutGoalApi();
+
+     Get.find<OwnerController>().getWorkoutGoalApi();
+      Get.find<OwnerController>().getSubActivityList( activityID: c.selectedActivityId.toString(),);
+
     });
 
     return SafeArea(
@@ -119,10 +125,10 @@ class AddWorkoutScreen extends StatelessWidget {
                                     onChanged: (newValue) {
                                       ownerControl.selectedActivity.value =
                                           newValue ??
-                                              {}; // Store raw data directly
+                                              {}; //
                                       ownerControl.selectActivityId(newValue?[
-                                          "id"]); // Access data directly as map
-
+                                          "id"]);
+                                      Get.find<OwnerController>().getSubActivityList( activityID: ownerControl.selectedActivityId.toString(),);
                                       print(ownerControl.selectedActivityId);
                                     },
                                     validator: (value) {

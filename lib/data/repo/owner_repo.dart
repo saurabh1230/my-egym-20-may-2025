@@ -22,8 +22,8 @@ class OwnerRepo {
     return await apiClient.getData(AppConstants.workOutActivity, method: "GET");
   }
 
-  Future<Response> getWorkoutSubActivityRepo() async {
-    return await apiClient.getData(AppConstants.subworkOutActivity, method: "GET");
+  Future<Response> getWorkoutSubActivityRepo(String? activityId) async {
+    return await apiClient.getData('${AppConstants.subworkOutActivity}?activity_id=$activityId', method: "GET");
   }
 
   Future<Response> getWorkoutGoalRepo() async {
@@ -188,6 +188,25 @@ class OwnerRepo {
 
   Future<Response> getOffersListing() async {
     return await apiClient.getData(AppConstants.getOffersUrl, method: "GET");
+  }
+
+  Future<Response> assignPersonalPlanUpdateRepo({
+    required String id,
+    required String memberId,
+    required String trainerId,
+    required String planId,
+    required String workoutId,
+
+  }) {
+    return apiClient.getData(
+        "${AppConstants.personalTrainingUpdateUrl}/$id",
+        body:  {
+          'member_id': memberId,
+          'trainer_id': trainerId,
+          'plan_id': planId,
+          'workout_id': workoutId
+        }
+    );
   }
 
 }

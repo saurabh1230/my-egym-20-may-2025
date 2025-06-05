@@ -135,7 +135,7 @@ class AuthController extends GetxController implements GetxService {
           case 'trainer':
             Get.offAllNamed(RouteHelper.getTrainerDashboard());
             break;
-          case 'user':
+          case 'trainee':
             Get.offAllNamed(RouteHelper.getUserDashboard());
             break;
           default:

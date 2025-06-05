@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
@@ -177,12 +178,12 @@ class TrainerController extends GetxController {
             print("🎯 First trainer info: $firstTrainer");
             print("👥 First trainer's members: $firstMembers");
 
-            // Example: directly accessing trainer name
+
             print("Trainer Name: ${firstTrainer["full_name"]}");
 
             // Directly handle the trainer info
             selectedTrainer.value =
-                firstTrainer; // Rx<dynamic> now holds trainer data
+                firstTrainer;
             _selectedTrainerId = firstTrainer["user_id"];
           }
 
@@ -378,6 +379,7 @@ class TrainerController extends GetxController {
     required String qualification,
     required String experienceInYear,
     required String password,
+    File? photoFilePath,
   }) async {
     final uri = Uri.parse('${AppConstants.baseUrl}${AppConstants.trainerUpdateUrl}/$trainerId');
     print("🔄 Sending Trainer Update to: $uri   Trainer id : $trainerId");
@@ -414,6 +416,18 @@ class TrainerController extends GetxController {
       request.fields['specializations[$i]'] = specializations[i].toString();
       print("➡ specializations[$i]: ${specializations[i]}");
     }
+
+    // Add file if provided
+    if (photoFilePath != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'photo',
+          photoFilePath.path,
+          filename: path.basename(photoFilePath.path),
+        ),
+      );
+    }
+
 
     // Set headers
     final token = Get.find<AuthController>().getUserToken();

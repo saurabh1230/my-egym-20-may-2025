@@ -112,9 +112,9 @@ class Login extends StatelessWidget {
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
                         controller.loginApi(
-                            email: emailController.text.trim(),
-                            gymId: gymIdController.text.trim(),
-                            password: passwordController.text.trim());
+                            email: emailController.text,
+                            gymId: gymIdController.text,
+                            password: passwordController.text);
                       }
                     },
                   ),

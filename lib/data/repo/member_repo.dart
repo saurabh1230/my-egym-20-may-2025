@@ -60,4 +60,13 @@ class MemberRepo {
     return await apiClient.getData('${AppConstants.membersUrl}/delete/$id',
         method: 'DELETE');
   }
+
+
+  Future<Response> getPersonalPlanMembers() async {
+    return await apiClient.getData(AppConstants.personalTrainingMemberList,
+        method: "GET");
+  }
+
+
+
 }

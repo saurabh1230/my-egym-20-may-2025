@@ -32,6 +32,7 @@ class BeginnerWorkouts extends StatelessWidget {
           child: ListView.separated(
               itemCount: workouts.length,
               shrinkWrap: true,
+              padding: EdgeInsets.only(bottom: 300),
               // physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final workout = workouts[index];
@@ -53,6 +54,7 @@ class BeginnerWorkouts extends StatelessWidget {
                         // )
                       ],
                     ),
+                    sizedBox10(),
                     Text(" ${workout["goals"]['name']}",
                       style: notoSansSemiBold.copyWith(
                         fontSize: Dimensions.fontSizeDefault,

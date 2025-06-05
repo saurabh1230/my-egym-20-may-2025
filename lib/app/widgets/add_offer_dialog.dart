@@ -17,9 +17,9 @@ import '../../utils/dimensions.dart';
 import 'custom_button.dart';
 
 
-class ConfirmationDialog extends StatelessWidget {
+class AddOfferDialog extends StatelessWidget {
   final String? title;
-   ConfirmationDialog({super.key,
+  AddOfferDialog({super.key,
     required this.title,
   });
 
