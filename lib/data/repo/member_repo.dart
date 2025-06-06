@@ -67,6 +67,30 @@ class MemberRepo {
         method: "GET");
   }
 
+  Future<Response> getMemberProfileDetailsRepo() async {
+    return await apiClient.getData(AppConstants.membersProfileDetailsUrl,
+        method: "GET");
+  }
+
+
+  Future<Response> memberProfileDetailsUpdate({
+    required String address,
+    required String name,
+    required String dob,
+    required String gender,
+  }) {
+    return apiClient.getData(
+        AppConstants.memberProfileUpdate,
+        body:  {
+          'address': address,
+          'full_name': name,
+          "date_of_birth" : dob,
+          "gender" : gender
+        }
+    );
+  }
+
+
 
 
 }

@@ -369,7 +369,7 @@ class AddMemberScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Emergency Contact Relationship',
+                                    'Emergency Contact Relationship Status',
                                     style: TextStyle(
                                       fontSize: 12.0,
                                       color: Colors.grey[600],

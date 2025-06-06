@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:myegym/app/user/account/update_account.dart';
 import 'package:myegym/app/user/home/components/multiple_banner_components.dart';
 import 'package:myegym/app/user/home/components/plan_subscribed_component.dart';
 import 'package:myegym/app/user/home/components/weekly_progress_component.dart';
@@ -25,6 +26,7 @@ import '../../../controllers/auth_controller.dart';
 import '../../../controllers/member_controller.dart';
 import '../../../data/repo/member_repo.dart';
 import '../../../helper/route_helper.dart';
+
 class Account extends StatelessWidget {
   const Account({super.key});
 
@@ -34,7 +36,7 @@ class Account extends StatelessWidget {
     Get.lazyPut(() => MemberController(memberRepo: Get.find()));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Get.find<MemberController>().getMemberDetails(id: Get.find<AuthController>().getUserid().toString());
+      Get.find<MemberController>().getMemberProfileDetailsApi();
     });
 
     return Scaffold(
@@ -43,7 +45,7 @@ class Account extends StatelessWidget {
         isLogo: true,
       ),
       body: GetBuilder<MemberController>(builder: (controller) {
-        final data = controller.memberDetails;
+        final data = controller.memberProfileDetails;
         if(data == null || data.isEmpty) {
           return SizedBox();
         }
@@ -55,12 +57,29 @@ class Account extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomDecoratedContainer(
-                    child: Row(
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CustomNetworkRoundImageWidget(
-                     image:  data['member']['image_url'],
-                      height: 80,
-                      width: 80,
+                    Column(
+                      children: [
+                        CustomNetworkRoundImageWidget(
+                         image:  data['image_url'].toString(),
+                          height: 80,
+                          width: 80,
+                        ),
+                        sizedBox4(),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            shape: WidgetStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0), // Customize radius here
+                              ),
+                            ),
+                            backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+                          ),
+                            onPressed: () {
+                            Get.to(() => UpdateAccount(data:data,));
+                            }, child: Text("Edit Profile"))
+                      ],
                     ),
                     sizedBoxW15(),
                     Flexible(
@@ -70,7 +89,7 @@ class Account extends StatelessWidget {
                           Text(
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                          data['member']?['full_name'] ?? "User",
+                          data['full_name'] ?? "User",
                             style: notoSansRegular.copyWith(color: Colors.white),
                           ),
                           Column(crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,13 +97,13 @@ class Account extends StatelessWidget {
                               Text(
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                data['member']?['phone_number'] ?? "N/A",
+                                data['phone_number'] ?? "N/A",
                                 style: notoSansRegular.copyWith(color: Colors.white),
                               ),
                               Text(
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                data['member']?['email'] ?? "N/A",
+                                data['email'] ?? "N/A",
                                 style: notoSansRegular.copyWith(color: Colors.white),
                               ),
                             ],

@@ -40,6 +40,8 @@ class AppConstants {
   static const String getOffersUrl = 'news-offer';
   static const String addOfferUrl = 'news-offer/store';
   static const String personalTrainingMemberList = 'trainer/memberdetails';
+  static const String membersProfileDetailsUrl= 'members/profile';
+  static const String memberProfileUpdate= 'members/profileUpdate';
   // Shared Key
   static const String theme = 'theme';
   static const String intro = 'intro';

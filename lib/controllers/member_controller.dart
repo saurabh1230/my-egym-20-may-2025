@@ -18,6 +18,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http_parser/http_parser.dart';
 
+import '../utils/date_converter.dart';
+
 class MemberController extends GetxController {
   final MemberRepo memberRepo;
 
@@ -428,6 +430,142 @@ class MemberController extends GetxController {
       update();
     }
   }
+
+
+
+  Map<String, dynamic>? _memberProfileDetails;
+  Map<String, dynamic>? get memberProfileDetails => _memberProfileDetails;
+
+  Future<void> getMemberProfileDetailsApi() async {
+    print('Fetching getMemberProfileDetailsRepo ================');
+    LoadingDialog.showLoading();
+
+    try {
+      Response response = await memberRepo.getMemberProfileDetailsRepo();
+
+      if (response.statusCode == 200) {
+        final data = response.body;
+        if (data != null && data['status'] == 'success') {
+          _memberProfileDetails = data['data'];
+          print('getMemberProfileDetailsRepo: getMemberProfileDetailsRepo');
+        } else {
+          print('Unexpected data getMemberProfileDetailsRepo format: $data');
+        }
+      } else {
+        print("Failed to load getMemberProfileDetailsRepo data: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Exception getMemberProfileDetailsRepo occurred: $e");
+    }
+
+    LoadingDialog.hideLoading();
+    update();
+  }
+
+  Future<void> memberProfileUpdate({
+    required String address,
+    required String name,
+    required String dob,
+    required String gender,
+  }) async {
+    LoadingDialog.showLoading();
+    update();
+    final formattedDob = DateConverter.formatDateDMYString(
+      inputDate: dob,
+      inputFormat: 'yyyy-MM-dd', // Assuming incoming dob is '2002-03-09'
+      outputFormat: 'dd/MM/yyyy',
+    );
+
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthController>().getUserToken()}',
+    };
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${AppConstants.baseUrl}${AppConstants.memberProfileUpdate}'),
+    );
+
+    Map<String, String> body = {
+      'date_of_birth': formattedDob,
+      'gender': gender,
+      'address': address,
+      'full_name': name,
+    };
+
+    request.fields.addAll(body);
+    request.headers.addAll(headers);
+
+    // 🔍 Print request body as raw JSON before sending
+    print("🔍 Sending Body:");
+    print(json.encode(body));
+
+    try {
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final resString = await response.stream.bytesToString();
+        final resJson = json.decode(resString);
+
+        if (resJson['status'] == 'success') {
+          print("✅ Success: ${resJson['message']}");
+          LoadingDialog.hideLoading();
+          update();
+          await getMemberProfileDetailsApi();
+          Get.back();
+        } else {
+          print("⚠️ Server responded with error status: ${resJson['message']}");
+          LoadingDialog.hideLoading();
+          update();
+        }
+      } else {
+        print("❌ HTTP Error: ${response.statusCode} ${response.reasonPhrase}");
+        final errorRes = await response.stream.bytesToString();
+        print("❌ Error Body: $errorRes"); // ← Add this to see 422 validation errors
+        LoadingDialog.hideLoading();
+        update();
+      }
+    } catch (e) {
+      print("❌ Exception occurred: $e");
+    } finally {
+      LoadingDialog.hideLoading();
+      update();
+    }
+  }
+
+
+  //
+  // Future<void> memberProfileUpdate() async {
+  //   print('➡️ Calling addPackageDuration...');
+  //   LoadingDialog.showLoading();
+  //
+  //   try {
+  //     Response response = await memberRepo.memberProfileDetailsUpdate(address:address, name: name, dob: dob, gender: gender);
+  //
+  //     print("📥 Response Body: ${response.body}");
+  //     print("📡 Status Code: ${response.statusCode}");
+  //
+  //     if (response.statusCode == 200) {
+  //       final body = response.body;
+  //       if (body != null && body['status'] == 'success') {
+  //
+  //         await getMemberProfileDetailsApi();
+  //         Get.back();
+  //       } else {
+  //         showCustomSnackBar(Get.context!, 'Unexpected response.', isError: true);
+  //       }
+  //     } else {
+  //       showCustomSnackBar(Get.context!, 'Failed with code ${response.statusCode}', isError: true);
+  //     }
+  //   } catch (e) {
+  //     print("🔥 Exception occurred: $e");
+  //     showCustomSnackBar(Get.context!, 'Network error occurred', isError: true);
+  //   } finally {
+  //     LoadingDialog.hideLoading();
+  //     update();
+  //   }
+  // }
+
 
 
 }
