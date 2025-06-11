@@ -168,27 +168,25 @@ class TrainerController extends GetxController {
         if (responseData["status"] == "success") {
           print("✅ API returned success");
 
-          // Directly access 'data' as a List<dynamic>
           List<dynamic> trainerDataList = responseData["data"];
 
           if (trainerDataList.isNotEmpty) {
+
             var firstTrainer = trainerDataList[0]["trainer"];
             var firstMembers = trainerDataList[0]["members"];
 
             print("🎯 First trainer info: $firstTrainer");
             print("👥 First trainer's members: $firstMembers");
-
-
             print("Trainer Name: ${firstTrainer["full_name"]}");
 
-            // Directly handle the trainer info
-            selectedTrainer.value =
-                firstTrainer;
+             selectedTrainer.value = firstTrainer;
             _selectedTrainerId = firstTrainer["user_id"];
+
           }
 
           print("🎯 Trainer List Length: ${trainerDataList.length}");
-          _trainerList = trainerDataList; // Store the entire trainer list
+
+          _trainerList = trainerDataList;
         } else {
           print("⚠️ Response status is not success");
           showCustomSnackBar(

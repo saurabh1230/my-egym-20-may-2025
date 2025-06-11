@@ -42,6 +42,8 @@ class AppConstants {
   static const String personalTrainingMemberList = 'trainer/memberdetails';
   static const String membersProfileDetailsUrl= 'members/profile';
   static const String memberProfileUpdate= 'members/profileUpdate';
+  static const String memberGymDetails= 'gymdetail';
+
   // Shared Key
   static const String theme = 'theme';
   static const String intro = 'intro';

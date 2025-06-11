@@ -57,12 +57,12 @@ class OwnerController extends GetxController {
   Future<void> getOwnerProfileApi() async {
     LoadingDialog.showLoading();
     try {
-      Response response = await ownerRepo.getOwnerProfileDetails();
+      Response response = await ownerRepo.getGymDetails();
 
       if (response.statusCode == 200) {
         final data = response.body;
         if (data != null && data['status'] == 'success') {
-          ownerProfileDetails = data['user']; // <-- fix here
+          ownerProfileDetails = data; // <-- fix here
           print('OwnerProfileDetails: $ownerProfileDetails');
         } else {
           print('Unexpected data format OwnerProfileDetails: $data');

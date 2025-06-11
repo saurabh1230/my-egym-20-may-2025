@@ -17,6 +17,10 @@ class OwnerRepo {
     return await apiClient.getData(AppConstants.ownerprofileUrl, method: "GET");
   }
 
+  Future<Response> getGymDetails() async {
+    return await apiClient.getData(AppConstants.memberGymDetails, method: "GET");
+  }
+
 
   Future<Response> getWorkoutActivityRepo() async {
     return await apiClient.getData(AppConstants.workOutActivity, method: "GET");

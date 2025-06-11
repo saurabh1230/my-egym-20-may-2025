@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:myegym/app/owner/drawer/owner_drawer.dart';
 import 'package:myegym/app/owner/profile/edit_profile.dart';
 import 'package:myegym/app/widgets/custom_app.dart';
@@ -7,6 +8,7 @@ import 'package:myegym/app/widgets/custom_containers.dart';
 import 'package:myegym/app/widgets/custom_network_image.dart';
 import 'package:myegym/controllers/owner_controller.dart';
 import 'package:myegym/data/repo/owner_repo.dart';
+import 'package:myegym/utils/date_converter.dart';
 import 'package:myegym/utils/dimensions.dart';
 import 'package:myegym/utils/sizeboxes.dart';
 import 'package:myegym/utils/styles.dart';
@@ -16,8 +18,6 @@ class OwnerProfile extends StatelessWidget {
   OwnerProfile({super.key}) {
     Get.lazyPut(() => OwnerRepo(apiClient: Get.find()));
     Get.put(OwnerController(ownerRepo: Get.find()));
-
-    // Fetch owner profile immediately
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -41,16 +41,14 @@ class OwnerProfile extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // Safely access nested properties using null-aware operators
-        final profileImage =
-            (data as Map<String, dynamic>?)?['image_url']?.toString();
-        final ownerName =
-            (data as Map<String, dynamic>?)?['name'] as String? ?? '';
-        final phoneNumber =
-            (data as Map<String, dynamic>?)?['phone_number'] as String? ?? '';
-        final email =
-            (data as Map<String, dynamic>?)?['email'] as String? ?? '';
-
+        final details = data['data']['details'];
+        final user = details['user'] ?? {};
+        final address = details['address'] ?? 'N/A';
+        final joiningDate = details['created_at'] ?? 'N/A';
+        final profileImage = data['data']['profile_image_url']?.toString() ?? '';
+        final ownerName = user['name'] ?? '';
+        final phoneNumber = user['phone_number'] ?? '';
+        final email = user['email'] ?? '';
         return SizedBox(height: Get.size.height,
           child: SingleChildScrollView(
             child: Padding(
@@ -119,13 +117,14 @@ class OwnerProfile extends StatelessWidget {
                     ),
                   ),
                   sizedBox10(),
-                  row(context, title: 'Years of Experience:', data: '1 Year'),
-                  row(context, title: 'Salary:', data: '₹ 20000'),
-                  row(context, title: 'Joining Date:', data: '20-02-2026'),
+                  // row(context, title: 'Years of Experience:', data: '1 Year'),
+                  // row(context, title: 'Salary:', data: '₹ 20000'),
+                  row(context, title: 'Joining Date:', data: DateFormatterOnlyDate.formatToIndianDate(joiningDate)),
+
                   row(
                     context,
                     title: 'Address:',
-                    data: 'Lorem Ipsum is simply dummy text of the printing',
+                    data: address,
                   ),
                 ],
               ),
