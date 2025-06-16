@@ -120,7 +120,6 @@ class OwnerProfile extends StatelessWidget {
                   // row(context, title: 'Years of Experience:', data: '1 Year'),
                   // row(context, title: 'Salary:', data: '₹ 20000'),
                   row(context, title: 'Joining Date:', data: DateFormatterOnlyDate.formatToIndianDate(joiningDate)),
-
                   row(
                     context,
                     title: 'Address:',

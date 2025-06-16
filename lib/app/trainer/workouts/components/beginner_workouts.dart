@@ -33,7 +33,6 @@ class BeginnerWorkouts extends StatelessWidget {
               itemCount: workouts.length,
               shrinkWrap: true,
               padding: EdgeInsets.only(bottom: 300),
-              // physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final workout = workouts[index];
                 final workoutHistory = workout['workout_history'];
@@ -44,14 +43,7 @@ class BeginnerWorkouts extends StatelessWidget {
                       children: [
                         CustomNetworkImageWidget(
                             height: 150, image: workout["image_url"] ?? ''),
-                        // Positioned(
-                        //   bottom: Dimensions.paddingSizeDefault,
-                        //   right: Dimensions.paddingSizeDefault,
-                        //   child: ElevatedButton(style: ButtonStyle(
-                        //     backgroundColor: MaterialStateProperty.all<Color>(primaryRedColor), // your desired color
-                        //   ),
-                        //       onPressed: () {}, child: Text("Edit")),
-                        // )
+
                       ],
                     ),
                     sizedBox10(),
@@ -85,7 +77,7 @@ class BeginnerWorkouts extends StatelessWidget {
                   ],
                 );
               },
-              separatorBuilder: (BuildContext context, int index) => sizedBox10(),
+              separatorBuilder: (BuildContext context, int index) => sizedBox30(),
             ),
         );
   }

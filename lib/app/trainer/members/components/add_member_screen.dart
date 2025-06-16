@@ -242,48 +242,40 @@ class AddMemberScreen extends StatelessWidget {
                                 ],
                               ),
                               sizedBoxDefault(),
-                              Row(
+                              UnderlineTextfield(
+                                maxLength: 6,
+                                keyboardType: TextInputType.number,
+                                label: 'Zip Code',
+                                hint: 'Zip Code',
+                                controller: zipCodeController,
+                                showSuffixIcon: false,
+                                validation: helperControl.validateZipCode,
+                              ),
+                              sizedBoxDefault(),
+                              Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
                                 children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Gender',
-                                            style: TextStyle(
-                                                fontSize: 12.0,
-                                                color: Colors.grey[600])),
-                                        Obx(() =>
-                                            DropdownButtonFormField<String>(
-                                              decoration: InputDecoration(
-                                                  border:
-                                                      UnderlineInputBorder()),
-                                              value: gender.value,
-                                              items: ['male', 'female']
-                                                  .map((value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                );
-                                              }).toList(),
-                                              onChanged: (newValue) => gender
-                                                  .value = newValue ?? 'male',
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(width: 16.0),
-                                  Expanded(
-                                    child: UnderlineTextfield(
-                                      maxLength: 6,
-                                      keyboardType: TextInputType.number,
-                                      label: 'Zip Code',
-                                      hint: 'Zip Code',
-                                      controller: zipCodeController,
-                                      showSuffixIcon: false,
-                                      validation: helperControl.validateZipCode,
-                                    ),
-                                  ),
+                                  Text('Gender',
+                                      style: TextStyle(
+                                          fontSize: 12.0,
+                                          color: Colors.grey[600])),
+                                  Obx(() =>
+                                      DropdownButtonFormField<String>(
+                                        decoration: InputDecoration(
+                                            border:
+                                            UnderlineInputBorder()),
+                                        value: gender.value,
+                                        items: ['male', 'female']
+                                            .map((value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                        onChanged: (newValue) => gender
+                                            .value = newValue ?? 'male',
+                                      )),
                                 ],
                               ),
                               sizedBoxDefault(),

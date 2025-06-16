@@ -332,9 +332,11 @@ class AddWorkoutScreen extends StatelessWidget {
                                         border: UnderlineInputBorder()),
                                     value: time.value,
                                     items: [
-                                      // '1-5',
+                                      '1-5',
                                       '5-10',
-                                      // '10-15'
+                                      '10-15',
+                                      '15-20',
+
                                     ].map((value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
@@ -363,7 +365,7 @@ class AddWorkoutScreen extends StatelessWidget {
                                           value: times.value,
                                           items: [
                                             // '1-5',
-                                            '5',
+                                            '5','10','15'
                                             // '10-15'
                                           ].map((value) {
                                             return DropdownMenuItem<String>(
@@ -391,9 +393,9 @@ class AddWorkoutScreen extends StatelessWidget {
                                               border: UnderlineInputBorder()),
                                           value: sessions.value,
                                           items: [
-                                            // '1-5',
                                             '5',
-                                            // '10-15'
+                                            '10',
+                                            '15'
                                           ].map((value) {
                                             return DropdownMenuItem<String>(
                                               value: value,

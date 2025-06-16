@@ -75,14 +75,14 @@ class OwnerDietPlan extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,)
                                       ],
                                     ),
-                                    Positioned(
-                                      bottom: Dimensions.paddingSize40,
-                                      right: Dimensions.paddingSizeDefault,
-                                      child: ElevatedButton(style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty.all<Color>(primaryRedColor), // your desired color
-                                      ),
-                                          onPressed: () {}, child: Text("Edit")),
-                                    )
+                                    // Positioned(
+                                    //   bottom: Dimensions.paddingSize40,
+                                    //   right: Dimensions.paddingSizeDefault,
+                                    //   child: ElevatedButton(style: ButtonStyle(
+                                    //     backgroundColor: MaterialStateProperty.all<Color>(primaryRedColor), // your desired color
+                                    //   ),
+                                    //       onPressed: () {}, child: Text("Edit")),
+                                    // )
                                   ],
                                 )
                               ],
