@@ -14,6 +14,7 @@ import 'package:myegym/utils/styles.dart';
 
 import '../../../utils/theme/light_theme.dart';
 import '../../widgets/create_plan_bottomsheet.dart';
+import '../screens/CreateDietScreen/create_new_diet_plan.dart';
 import 'diet_plan_details.dart';
 
 class OwnerDietPlan extends StatelessWidget {
@@ -100,7 +101,8 @@ class OwnerDietPlan extends StatelessWidget {
             child: CustomButtonWidget(
               buttonText: "Create New Plan",
               onPressed: () {
-                Get.bottomSheet(CreatePlanBottomsheet());
+                Get.to(() => const CreateNewDietPlan());// Updated code
+                // Get.bottomSheet(CreatePlanBottomsheet()); // old code
               },
             ),
           ),

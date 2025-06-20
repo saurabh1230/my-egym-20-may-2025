@@ -40,7 +40,6 @@ class AuthController extends GetxController implements GetxService {
     return sharedPreferences.getString(AppConstants.userId);
   }
 
-
   String getUserToken() {
     return authRepo.getUserToken();
   }
